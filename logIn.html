@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <!-- linking necessary stylesheets -->
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <title>Recipe Database - Returning User</title>
+</head>
+<body>
+  <h1>Login</h1><br>
+    <div class="login">
+    <form id="login" method="get" action="login.php">
+      <center>
+        <label><b>User Name</b></label>
+        <input type="text" name="Uname" id="Uname" placeholder="Username">
+        <br><br><br>
+        <label><b>Password</b></label>
+        <input type="Password" name="Pass" id="Pass" placeholder="Password">
+        <br><br>
+        <input type="button" name="log" class="log" value="Log In">
+        <br><br><br>
+        <input type="button" value="New user?" class="log" onclick="javascript:window.location.assign(register.html)">
+      </center>
+    </form>
+</div>
+</body>
+</html>

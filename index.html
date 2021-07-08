@@ -6,20 +6,17 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <!-- linking necessary stylesheets -->
   <link rel="stylesheet" type="text/css" href="style.css">
-  <title>Recipe Database - Login</title>
+  <title>Recipe Database - Start</title>
 </head>
 <body>
-  <h1>Login</h1><br>
+  <h1>Start</h1><br>
     <div class="login">
     <form id="login" method="get" action="login.php">
       <center>
-        <label><b>User Name</b></label>
-        <input type="text" name="Uname" id="Uname" placeholder="Username">
-        <br><br><br>
-        <label><b>Password</b></label>
-        <input type="Password" name="Pass" id="Pass" placeholder="Password">
+        <br>
+        <input type="button" class="log" value="New user?" onclick="javascript:window.location.assign(register.html)">
         <br><br>
-        <input type="button" name="log" id="log" value="Log In">
+        <input type="button" class="log" value="Already have an account?" onclick="javascript:window.location.assign(logIn.html)">
       </center>
     </form>
 </div>
