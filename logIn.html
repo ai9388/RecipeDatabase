@@ -38,13 +38,13 @@ function validateForm(){
   var usernameBool = true;
   var passwordBool = true;
 
-  if ( username == "" || username == "" || username == null ) {
+  if ( username == "" || username == " " || username == null ) {
       alert("Username must be filled out");
       login.Uname.focus();
       usernameBool = false;
   }
 
-  if ( password == "" || password == "" || password == null ) {
+  if ( password == "" || password == " " || password == null ) {
       alert("Password must be filled out");
       login.Pass.focus();
       passwordBool = false;
@@ -55,7 +55,7 @@ function validateForm(){
   } else {
     // all is good and we can move onto the actual website
     // we must also send this to the database to verify
-    location.href="index.html";
+    location.href="home.html";
   }
 }
 

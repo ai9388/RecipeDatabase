@@ -45,12 +45,18 @@ label{
 }
 
 .log{
-    width: 300px;
+    width: 200px;
     height: 30px;
     border: none;
-    border-radius: 17px;
+    border-radius: 5px;
     padding-left: 7px;
-    color: blue;
+    color: #277582;
+    cursor: pointer;
+}
+
+.log:hover {
+    background-color: #838383;
+    color: #ffffff;
 }
 
 span{
