@@ -22,7 +22,7 @@
         </header>
 
         <div class="w3-container">
-          <center><button id="seeAllIngredients" >See all Ingredients</button></center>
+          <center><button id="seeAllIngredients">See all Ingredients</button></center>
         </div>
 
         <div class="w3-container" id="currentUserPantry">
@@ -32,7 +32,7 @@
       </div>
 
       <!--Holds the information for all available ingredients-->
-      <div class="w3-card-4" id="allIngredientsCard">
+      <div class="w3-card-4 invisible" id="allIngredientsCard">
         <header class="w3-container w3-light-gray">
           <h1><center>All Ingredients</center></h1>
         </header>
@@ -81,8 +81,24 @@
     </div>
 
 
-
-
   </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.js"
+  integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+  crossorigin="anonymous"></script>
+
+  <script>
+
+  $("#seeAllIngredients").click(function (){
+    $("#allIngredientsCard").addClass("w3-animate-bottom visible")
+    $("#allIngredientsCard").removeClass("w3-animate-right")
+  });
+
+  $("#returnFromIngredToPantry").click(function (){
+    $("#allIngredientsCard").removeClass("w3-animate-bottom visible")
+    $("#allIngredientsCard").addClass("w3-animate-right")
+  });
+
+  </script>
 </body>
 </html>

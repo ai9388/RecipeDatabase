@@ -48,16 +48,12 @@ body {
 
 
 #pantryCard {
-    top: 0;
-    left: 0;
     position: relative;
     z-index: 1;
 }
 
 
 #allIngredientsCard {
-    top: 0;
-    left: 0;
     position: relative;
     z-index: 1;
 }
@@ -79,6 +75,17 @@ body {
     position: relative;
     z-index: 1;
 }
+
+
+.visible {
+  visibility: visible !important;
+}
+
+
+.invisible {
+  visibility: hidden;
+}
+
 
 button {
     width: 200px;
