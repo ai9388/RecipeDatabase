@@ -1,0 +1,81 @@
+body{
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial';
+    background-color: #e8e8e8;
+}
+
+
+h1{
+    text-align: center;
+    color: #277582;
+    padding: 20px;
+}
+
+
+#titleHeader {
+    font-size: 3em;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+.column {
+    float: left;
+    width: 33%;
+    length: 75%;
+    padding: 0 10px;
+}
+
+
+.row {
+    margin: 0 -5px;
+}
+
+/*
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+*/
+
+#pantryCard {
+    top: 0;
+    left: 0;
+    position: relative;
+    z-index: 1;
+}
+
+
+#allIngredientsCard {
+    top: 0;
+    left: 0;
+    position: relative;
+    z-index: -1;
+}
+
+
+#recipeCard {
+    position: relative;
+    z-index: 1;
+}
+
+
+#individualRecipe {
+    position: relative;
+    z-index: -1;
+}
+
+
+#categoryCard {
+    position: relative;
+    z-index: 1;
+}
