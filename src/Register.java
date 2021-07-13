@@ -33,7 +33,7 @@ public class Register {
             String selectUsers = "INSERT INTO chefs(username, password, creation_date, creation_time, last_access_date, last_access_time) " +
                     "VALUES ('" + username + "', '" + password + "', '" + dateAndTime + "', '" + dateAndTime + "');";
             System.out.println(selectUsers);
-            stmt.executeQuery(selectUsers);
+            stmt.executeUpdate(selectUsers);
             db.close();
             return true;
         } catch (Exception e) {
