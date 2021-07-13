@@ -44,7 +44,7 @@ public class Register {
     }
 
     public static void main(String[] args) {
-        System.out.println("Start Adding chef..." + args.length);
+        System.out.println("Start Adding to chef...");
         if(args.length == 2) {
             System.out.println("username: " + args[0]);
             System.out.println("password: " + args[1]);

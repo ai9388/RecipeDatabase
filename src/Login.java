@@ -38,7 +38,7 @@ public class Login {
     }
 
     public static void main(String[] args) {
-        System.out.println("Start Login Validation..." + args.length);
+        System.out.println("Start Login Validation...");
         System.out.println("username: " + args[0]);
         System.out.println("password: " + args[1]);
         if(args.length == 2) {
