@@ -20,13 +20,45 @@
         <label><b>Password</b></label>
         <input type="Password" name="Pass" id="Pass" placeholder="Password">
         <br><br>
-        <input type="button" name="log" class="log" value="Log In">
+        <input type="button" name="log" class="log" value="Log In" onclick="validateForm()">
         <br><br><br>
         <input type="button" value="New user?" class="log" onclick="location.href='register.html'">
       </center>
     </form>
 </div>
+
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="script.js"></script>
+
+<script type="text/javascript">
+function validateForm(){
+  var username = document.getElementById("Uname").value;
+  var password = document.getElementById("Pass").value;
+
+  var usernameBool = true;
+  var passwordBool = true;
+
+  if ( username == "" || username == "" || username == null ) {
+      alert("Username must be filled out");
+      login.Uname.focus();
+      usernameBool = false;
+  }
+
+  if ( password == "" || password == "" || password == null ) {
+      alert("Password must be filled out");
+      login.Pass.focus();
+      passwordBool = false;
+  }
+
+  if (usernameBool == false || passwordBool == false) {
+      alert("One or more credentials are missing");
+  } else {
+    // all is good and we can move onto the actual website
+    // we must also send this to the database to verify
+    location.href="index.html";
+  }
+}
+
+</script>
 </body>
 </html>
