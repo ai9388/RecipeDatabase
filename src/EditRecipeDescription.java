@@ -16,8 +16,8 @@ public class EditRecipeDescription {
             Class.forName("org.postgresql.Driver");
             Connection db = DriverManager.getConnection("jdbc:postgresql://reddwarf.cs.rit.edu:5432/p32001f", "p32001f", "eeje5EiRoo9atha3ooLo");
             Statement stmt = db.createStatement();
-            String updateCookTime = "UPDATE recipe SET description='" + recipeDescription + "' WHERE recipe_id='" + recipeID + "'";
-            stmt.executeUpdate(updateCookTime);
+            String updateDescription = "UPDATE recipe SET description='" + recipeDescription + "' WHERE recipe_id='" + recipeID + "'";
+            stmt.executeUpdate(updateDescription);
 
             db.close();
             return "Recipe Updated.";
@@ -31,7 +31,7 @@ public class EditRecipeDescription {
     public static void main(String[] args) {
         System.out.println("Start Description Edit...");
         if (args.length == 2) {
-            EditRecipeDescription editRecipeDescription = new EditRecipeDescription(Integer.parseInt(args[0]), Integer.parseInt(args[1]));
+            EditRecipeDescription editRecipeDescription = new EditRecipeDescription(Integer.parseInt(args[0]), args[1]);
             System.out.println(editRecipeDescription.editDescription());
         }
     }
