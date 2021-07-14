@@ -11,12 +11,11 @@ public class EditRecipeServings {
 
     public boolean editRecipeServings() {
         try {
-            boolean result = false;
             Class.forName("org.postgresql.Driver");
             Connection db = DriverManager.getConnection("jdbc:postgresql://reddwarf.cs.rit.edu:5432/p32001f", "p32001f", "eeje5EiRoo9atha3ooLo");
             Statement stmt = db.createStatement();
-            String updateName = "UPDATE recipe SET servings='" + recipeServings + "' WHERE recipe_id='" + recipeID + "'";
-            stmt.executeUpdate(updateName);
+            String updateServings = "UPDATE recipe SET servings='" + recipeServings + "' WHERE recipe_id='" + recipeID + "'";
+            stmt.executeUpdate(updateServings);
             db.close();
             return true;
         } catch (Exception e) {
@@ -31,10 +30,10 @@ public class EditRecipeServings {
         if (args.length == 2) {
             System.out.println("Recipe ID: " + args[0]);
             System.out.println("Recipe Servings: " + args[1]);
-        }
-        EditRecipeName newRecipe = new EditRecipeName(Integer.parseInt(args[0]), args[1]);
-        if (newRecipe.editRecipeName()) {
-            System.out.println("Recipe is edited.");
+            EditRecipeServings editRecipeServings = new EditRecipeServings(Integer.parseInt(args[0]), Integer.parseInt(args[1]));
+            if (editRecipeServings.editRecipeServings()) {
+                System.out.println("Recipe is edited.");
+            }
         }
     }
 }
