@@ -2,7 +2,6 @@ import java.sql.*;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
-import java.util.regex.MatchResult;
 
 public class MakeRecipe {
     private String recipeName;
@@ -50,7 +49,9 @@ public class MakeRecipe {
             String existedCheck = "SELECT recipe_id FROM recipe WHERE recipe_id='" + recipeID +"'";
             ResultSet existedID = stmt.executeQuery(existedCheck);
             while(existedID.next()){
-                recipeID = 1000 + random.nextInt(1000);
+                recipeID = 10000 + random.nextInt(1000);
+                existedCheck = "SELECT recipe_id FROM recipe WHERE recipe_id='" + recipeID +"'";
+                existedID = stmt.executeQuery(existedCheck);
             }
 
             //Record current date and time for the database
