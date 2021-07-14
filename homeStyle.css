@@ -88,7 +88,7 @@ body {
 
 
 button {
-    width: 200px;
+    width: 10px;
     height: 30px;
     border: none;
     border-radius: 5px;
@@ -101,4 +101,12 @@ button {
 button:hover {
     background-color: #838383;
     color: #ffffff;
+}
+
+
+label{
+    float: left;
+    padding-left: 35px;
+    color: #277582;
+    font-size: 17px;
 }

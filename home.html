@@ -9,7 +9,13 @@
   <title>Recipe Database - Home</title>
 </head>
 <body>
-  <h1 id="titleHeader"><center>Recipes</center></h1><br><br>
+  <h1 id="titleHeader">
+    <center><strong>Recipes</strong><br>
+      Welcome back <span id="username"></span><br>
+      Account was created on <span id="userCreationDate"></span><br>
+      Last log in was on <span id="lastLogInDay"></span><br>
+    </center>
+  </h1><br><br>
 
   <!-- holds all three cards containing the data-->
   <div class="row">
@@ -26,7 +32,9 @@
         </div>
 
         <div class="w3-container" id="currentUserPantry">
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente nostrum maxime perferendis, labore assumenda, nihil nulla quos inventore qui repellat voluptatibus sequi distinctio at, aliquid dolorem porro dolorum reprehenderit et.</p>
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente nostrum maxime perferendis,
+            labore assumenda, nihil nulla quos inventore qui repellat voluptatibus sequi distinctio at,
+            aliquid dolorem porro dolorum reprehenderit et.</p>
         </div>
 
       </div>
@@ -36,7 +44,7 @@
         <header class="w3-container w3-light-gray">
           <h1><center>All Ingredients</center></h1>
         </header>
-        <p id="ingredients "></p>
+        <p id="ingredients"></p>
 
         <footer class="w3-container w3-light-blue">
           <br>
@@ -53,14 +61,40 @@
       <div class="w3-card-4" id="recipeCard">
         <header class="w3-container w3-light-gray">
           <h1><center>Recipe</center></h1>
+          <center>
+            <button id="editRecipeButton">Edit</button><br><br>
+            <button id="createRecipeButton">Create</button><br><br>
+            <button id="deleteRecipeButton">Delete</button><br><br>
+          </center>
         </header>
+
+        <div class="w3-container">
+          <center><button id="showSpecificRecipe">Show Recipe</button></center>
+        </div>
+
       </div>
 
       <!--Holds the information for an individual recipe-->
-      <div class="w3-card-4" id="individualRecipe">
+      <div class="w3-card-4 invisible" id="individualRecipeCard">
         <header class="w3-container w3-light-gray">
           <h1><center>Individual Recipe</center></h1>
         </header>
+
+        <div class="w3-container">
+          <p>Name: <span id="recipeName"></span></p><br>
+          <p>ID: <span id="recipeIdSpan"></span></p><br>
+          <p>Description: <span id="recipeDescription"></span></p><br>
+          <p>Servings: <span id="recipeServings"></span></p><br>
+          <p>Cook time (minutes): <span id="recipeCookTime"></span></p><br>
+          <p>Ingredients: <span id="recipeIngredients"></span></p><br>
+          <p>Steps: <span id="recipeSteps"></span></p><br>
+          <p>Difficulty: <span id="recipeDifficulty"></span></p><br>
+          <p>Rating: <span id="recipeRating"></span></p><br>
+          <p>Created by: <span id="recipeCreatedBy"></span></p><br>
+          <p>Created: <span id="recipeCreationDate"></span></p><br>
+          <p>Last Time Made: <span id="recipeLastTimeMade"></span></p><br>
+          <p>Categories: <span id="recipeCategories"></span></p><br>
+        </div>
 
         <footer class="w3-container w3-light-blue">
           <br>
@@ -76,10 +110,14 @@
       <div class="w3-card-4" id="categoryCard">
         <header class="w3-container w3-light-gray">
           <h1><center>Categories</center></h1>
+          <center>
+            <button id="editCategoryButton">Edit</button><br><br>
+            <button id="createCategoryButton">Create</button><br><br>
+            <button id="deleteCategoryButton">Delete</button><br><br>
+          </center>
         </header>
       </div>
     </div>
-
 
   </div>
 
@@ -88,7 +126,6 @@
   crossorigin="anonymous"></script>
 
   <script>
-
   $("#seeAllIngredients").click(function (){
     $("#allIngredientsCard").addClass("w3-animate-bottom visible")
     $("#allIngredientsCard").removeClass("w3-animate-right")
@@ -99,15 +136,18 @@
     $("#allIngredientsCard").addClass("w3-animate-right")
   });
 
-  // $("#seeAllIngredients").click(function (){
-  //   $("#allIngredientsCard").addClass("w3-animate-bottom visible")
-  //   $("#allIngredientsCard").removeClass("w3-animate-right")
-  // });
+  $("#showSpecificRecipe").click(function (){
+    $("#individualRecipeCard").addClass("w3-animate-bottom visible")
+    $("#individualRecipeCard").removeClass("w3-animate-right")
+  });
 
   $("#returnFromIndivToRecipe").click(function (){
-    $("#allIngredientsCard").removeClass("w3-animate-bottom visible")
-    $("#allIngredientsCard").addClass("w3-animate-right")
+    $("#individualRecipeCard").removeClass("w3-animate-bottom visible")
+    $("#individualRecipeCard").addClass("w3-animate-right")
   });
+
+  // look up postgres connection via php
+  // query data from postgress using php
 
   </script>
 </body>
