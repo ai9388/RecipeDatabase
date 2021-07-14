@@ -1,7 +1,7 @@
 import java.sql.*;
 
 public class MakeCategory {
-    private String categoryName;
+    private final String categoryName;
 
     public MakeCategory(String categoryName) {
         this.categoryName = categoryName;
@@ -15,11 +15,12 @@ public class MakeCategory {
             Statement stmt = db.createStatement();
 
             //insert data into database
-            String selectCategory = "INSERT INTO recipe_category(category_name)" + "VALUES (' " + categoryName + "')";
+            String selectCategory = "INSERT INTO recipe_category(category_name) VALUES ('" + categoryName + "')";
 
             System.out.println(selectCategory);
             stmt.executeUpdate(selectCategory);
             db.close();
+            return true;
         }
         catch(Exception e){
             System.err.println("Error loading postgres driver.");
@@ -28,16 +29,14 @@ public class MakeCategory {
         return false;
     }
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         System.out.println("creating new category");
         if(args.length == 1){
             System.out.println("Category Name: " + args[0]);
-        }
-        MakeCategory newCategory = new MakeCategory(args[0]);
-
-        if (newCategory.createCategory()){
-            System.out.println("Category is created.");
+            MakeCategory newCategory = new MakeCategory(args[0]);
+            if (newCategory.createCategory()){
+                System.out.println("Category is created.");
+            }
         }
     }
 }
