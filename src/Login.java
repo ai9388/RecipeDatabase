@@ -1,4 +1,6 @@
 import java.sql.*;
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
 
 /**
  * Back end implementation for login. Includes SQl.
@@ -27,7 +29,20 @@ public class Login {
                     result = rs.getString("password").equals(password);
                 }
             }
+            if(result) {
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                LocalDateTime now = LocalDateTime.now();
+                String dateAndTime = dtf.format(now);
+                String date = dateAndTime.substring(0, 10);
+                String time = dateAndTime.substring(11, 19);
 
+                String updateAccessDate = "UPDATE chefs SET last_access_date= '" + date + "' WHERE username = '" + username + "'";
+                String updateAccessTime = "UPDATE chefs SET last_access_time='" + time + "' WHERE username='" + username + "'";
+
+                stmt.executeUpdate(updateAccessDate);
+                stmt.executeUpdate(updateAccessTime);
+                System.out.println("Access date and time updated...");
+            }
             db.close();
             return result;
         } catch (Exception e) {
