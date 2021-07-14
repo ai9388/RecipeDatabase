@@ -4,9 +4,9 @@ import java.sql.Statement;
 
 public class EditRecipeDescription {
     private final int recipeID;
-    private final int recipeDescription;
+    private final String recipeDescription;
 
-    public EditRecipeDescription(int recipeID, int recipeDescription) {
+    public EditRecipeDescription(int recipeID, String recipeDescription) {
         this.recipeID = recipeID;
         this.recipeDescription = recipeDescription;
     }
@@ -29,7 +29,7 @@ public class EditRecipeDescription {
     }
 
     public static void main(String[] args) {
-        System.out.println("Start Cook Time Edit...");
+        System.out.println("Start Description Edit...");
         if (args.length == 2) {
             EditRecipeDescription editRecipeDescription = new EditRecipeDescription(Integer.parseInt(args[0]), Integer.parseInt(args[1]));
             System.out.println(editRecipeDescription.editDescription());
