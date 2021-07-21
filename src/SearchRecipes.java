@@ -38,6 +38,6 @@ public class SearchRecipes {
             String recipes = search.getRecipes();
             System.out.print(recipes);
         }
-        System.out.println("Login sequence complete.");
+        System.out.println("Search complete.");
     }
 }
