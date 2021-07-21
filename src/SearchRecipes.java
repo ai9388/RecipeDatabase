@@ -19,7 +19,7 @@ public class SearchRecipes {
             ResultSet rs;
             rs = stmt.executeQuery(selectRecipes);
             StringBuilder recipes = new StringBuilder();
-            while(rs.next()) {
+            while (rs.next()) {
                 recipes.append(rs.getString("recipe_name")).append("\n");
             }
             db.close();
@@ -33,7 +33,7 @@ public class SearchRecipes {
 
     public static void main(String[] args) {
         System.out.println("Start Recipe Search...");
-        if(args.length == 1) {
+        if (args.length == 1) {
             SearchRecipes search = new SearchRecipes(args[0]);
             String recipes = search.getRecipes();
             System.out.print(recipes);

@@ -1,4 +1,6 @@
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
 
 public class MakeCategory {
     private final String categoryName;
@@ -21,8 +23,7 @@ public class MakeCategory {
             stmt.executeUpdate(selectCategory);
             db.close();
             return true;
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             System.err.println("Error loading postgres driver.");
             e.printStackTrace();
         }
@@ -31,10 +32,10 @@ public class MakeCategory {
 
     public static void main(String[] args) {
         System.out.println("creating new category");
-        if(args.length == 1){
+        if (args.length == 1) {
             System.out.println("Category Name: " + args[0]);
             MakeCategory newCategory = new MakeCategory(args[0]);
-            if (newCategory.createCategory()){
+            if (newCategory.createCategory()) {
                 System.out.println("Category is created.");
             }
         }

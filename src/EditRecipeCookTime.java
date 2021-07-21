@@ -30,7 +30,7 @@ public class EditRecipeCookTime {
 
     public static void main(String[] args) {
         System.out.println("Start Cook Time Edit...");
-        if(args.length == 2) {
+        if (args.length == 2) {
             EditRecipeCookTime editRecipeCookTime = new EditRecipeCookTime(Integer.parseInt(args[0]), Integer.parseInt(args[1]));
             System.out.println(editRecipeCookTime.editCookTime());
         }

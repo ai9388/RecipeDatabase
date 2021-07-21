@@ -1,5 +1,8 @@
-import java.sql.*;
-import java.time.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
 
@@ -18,25 +21,22 @@ public class MakeRecipe {
         this.steps = steps;
     }
 
-    public String getDifficulty(int cookTime){
+    public String getDifficulty(int cookTime) {
         String difficulty;
-        if (cookTime <= 15){
+        if (cookTime <= 15) {
             difficulty = "Easy";
-        }
-        else if (cookTime <= 30){
+        } else if (cookTime <= 30) {
             difficulty = "Easy-Medium";
-        }
-        else if (cookTime <=45){
+        } else if (cookTime <= 45) {
             difficulty = "Medium";
-        }
-        else if (cookTime <= 60 ){
+        } else if (cookTime <= 60) {
             difficulty = "Medium-Hard";
-        }
-        else {
+        } else {
             difficulty = "Hard";
         }
         return difficulty;
     }
+
     public boolean createRecipe() {
         try {
             Class.forName("org.postgresql.Driver");
@@ -46,11 +46,11 @@ public class MakeRecipe {
             //Generate random recipeID while keep tracking for duplicates.
             Random random = new Random();
             int recipeID = 10000 + random.nextInt(1000);
-            String existedCheck = "SELECT recipe_id FROM recipe WHERE recipe_id='" + recipeID +"'";
+            String existedCheck = "SELECT recipe_id FROM recipe WHERE recipe_id='" + recipeID + "'";
             ResultSet existedID = stmt.executeQuery(existedCheck);
-            while(existedID.next()){
+            while (existedID.next()) {
                 recipeID = 10000 + random.nextInt(1000);
-                existedCheck = "SELECT recipe_id FROM recipe WHERE recipe_id='" + recipeID +"'";
+                existedCheck = "SELECT recipe_id FROM recipe WHERE recipe_id='" + recipeID + "'";
                 existedID = stmt.executeQuery(existedCheck);
             }
 
@@ -85,10 +85,11 @@ public class MakeRecipe {
             System.out.println("Description: " + args[1]);
             System.out.println("Servings: " + args[2]);
             System.out.println("Cook Time: " + args[3]);
-            System.out.println("Steps: " + args[4] );
+            System.out.println("Steps: " + args[4]);
         }
-        MakeRecipe newRecipe = new MakeRecipe(args[0],args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]), args[4]);
-        if (newRecipe.createRecipe()){
-            System.out.println("Recipe is created."); }
+        MakeRecipe newRecipe = new MakeRecipe(args[0], args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]), args[4]);
+        if (newRecipe.createRecipe()) {
+            System.out.println("Recipe is created.");
         }
+    }
 }

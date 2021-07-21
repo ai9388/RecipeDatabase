@@ -1,8 +1,11 @@
-import java.io.IOException;
-import java.sql.*;
 import java.io.FileWriter;
-import java.time.format.DateTimeFormatter;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Back end implementation for login. Includes SQl.
@@ -25,13 +28,13 @@ public class Login {
             String selectUsers = "SELECT username, password FROM chefs WHERE username=\'" + username + "\'";
             ResultSet rs;
             rs = stmt.executeQuery(selectUsers);
-            if(rs.next()) {
-                if(rs.getString("username").equals(username)) {
+            if (rs.next()) {
+                if (rs.getString("username").equals(username)) {
 
                     result = rs.getString("password").equals(password);
                 }
             }
-            if(result) {
+            if (result) {
                 DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                 LocalDateTime now = LocalDateTime.now();
                 String dateAndTime = dtf.format(now);
@@ -58,7 +61,7 @@ public class Login {
         System.out.println("Start Login Validation...");
         System.out.println("username: " + args[0]);
         System.out.println("password: " + args[1]);
-        if(args.length == 2) {
+        if (args.length == 2) {
             Login login = new Login(args[0], args[1]);
             System.out.println(login.validLogin());
         }

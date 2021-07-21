@@ -1,28 +1,31 @@
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
 
 public class EditRecipeSteps {
     private final int recipeID;
     private final String steps;
 
-    public EditRecipeSteps(int recipeID, String steps){
+    public EditRecipeSteps(int recipeID, String steps) {
         this.recipeID = recipeID;
         this.steps = steps;
     }
 
-    public boolean editRecipeSteps(){
-        try{
+    public boolean editRecipeSteps() {
+        try {
             Class.forName("org.postgresql.Driver");
             Connection db = DriverManager.getConnection("jdbc:postgresql://reddwarf.cs.rit.edu:5432/p32001f", "p32001f", "eeje5EiRoo9atha3ooLo");
             Statement stmt = db.createStatement();
             String updateSteps = "UPDATE recipe SET steps='" + steps + "' WHERE recipe_id='" + recipeID + "'";
             stmt.executeUpdate(updateSteps);
             db.close();
-        }catch (Exception e) {
+        } catch (Exception e) {
             System.err.println("Error loading postgres driver.");
             e.printStackTrace();
         }
         return false;
     }
+
     public static void main(String[] args) {
         System.out.println("Start Editing to recipe steps...");
         if (args.length == 2) {

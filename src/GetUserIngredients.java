@@ -18,13 +18,12 @@ public class GetUserIngredients {
             String ingredientQuery = "SELECT item_name FROM item WHERE item_id IN (SELECT item_id FROM owns WHERE username='" + username + "')";
             ResultSet ingredients = stmt.executeQuery(ingredientQuery);
             StringBuilder result = new StringBuilder();
-            while(ingredients.next()) {
+            while (ingredients.next()) {
                 result.append(ingredients.getString("item_name")).append("\n");
             }
             db.close();
             return result.toString();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             System.out.println("Error loading postgres driver.");
             e.printStackTrace();
         }
@@ -34,7 +33,7 @@ public class GetUserIngredients {
     public static void main(String[] args) {
         System.out.println("Start Chef Ingredients Query...");
         System.out.println("username: " + args[0]);
-        if(args.length == 1) {
+        if (args.length == 1) {
             GetUserIngredients getUserIngredients = new GetUserIngredients(args[0]);
             System.out.println(getUserIngredients.getIngredients());
         }
