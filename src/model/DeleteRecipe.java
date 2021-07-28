@@ -1,3 +1,5 @@
+package model;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
@@ -35,6 +37,6 @@ public class DeleteRecipe {
             boolean recipes = delete.getRecipe();
             System.out.print(recipes);
         }
-        System.out.println("Login sequence complete.");
+        System.out.println("model.Login sequence complete.");
     }
 }

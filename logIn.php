@@ -4,7 +4,7 @@
   $username = "123456";
   $password = "12345";
 
-  exec("java C:\wamp64\www\src\Login.java $username $password");
+  exec("java C:\wamp64\www\src\model.Login.java $username $password");
 
   //header("Location: home.html");
 ?>

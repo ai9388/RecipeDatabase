@@ -11,7 +11,7 @@
   <title>Recipe Database - New User</title>
 </head>
 <body>
-  <h1><strong>Register</strong></h1><br>
+  <h1><strong>model.Register</strong></h1><br>
     <div class="login">
     <form id="login" method="get" action="login.php">
       <center>
@@ -21,7 +21,7 @@
         <label><b>Password</b></label>
         <input type="Password" name="Pass" id="Pass" placeholder="Password">
         <br><br>
-        <input type="button" name="log" class="log" value="Register" onclick="validateForm()">
+        <input type="button" name="log" class="log" value="model.Register" onclick="validateForm()">
         <br><br><br>
         <input type="button" value="Already have an account?" class="log" onclick="location.href='logIn.php'">
       </center>

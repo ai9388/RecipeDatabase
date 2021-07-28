@@ -1,3 +1,5 @@
+package model;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Connection;
@@ -58,14 +60,14 @@ public class Login {
     }
 
     public static void main(String[] args) throws IOException {
-        System.out.println("Start Login Validation...");
+        System.out.println("Start model.Login Validation...");
         System.out.println("username: " + args[0]);
         System.out.println("password: " + args[1]);
         if (args.length == 2) {
             Login login = new Login(args[0], args[1]);
             System.out.println(login.validLogin());
         }
-        System.out.println("Login sequence complete.");
+        System.out.println("model.Login sequence complete.");
         // make random file and give it a random value
         FileWriter writer = new FileWriter("output.txt");
         writer.write("This is a test!random garbage gibberishasd;fklgjbhl;akhjnsgd;hlasgdnkl;jnsdga\n");

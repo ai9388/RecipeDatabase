@@ -1,23 +1,25 @@
+package model;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
 
-public class EditRecipeName {
+public class EditRecipeServings {
     private final int recipeID;
-    private final String recipeName;
+    private final int recipeServings;
 
-    public EditRecipeName(int recipeID, String recipeName) {
+    public EditRecipeServings(int recipeID, int recipeServings) {
         this.recipeID = recipeID;
-        this.recipeName = recipeName;
+        this.recipeServings = recipeServings;
     }
 
-    public boolean editRecipeName() {
+    public boolean editRecipeServings() {
         try {
             Class.forName("org.postgresql.Driver");
             Connection db = DriverManager.getConnection("jdbc:postgresql://reddwarf.cs.rit.edu:5432/p32001f", "p32001f", "eeje5EiRoo9atha3ooLo");
             Statement stmt = db.createStatement();
-            String updateName = "UPDATE recipe SET recipe_name='" + recipeName + "' WHERE recipe_id='" + recipeID + "'";
-            stmt.executeUpdate(updateName);
+            String updateServings = "UPDATE recipe SET servings='" + recipeServings + "' WHERE recipe_id='" + recipeID + "'";
+            stmt.executeUpdate(updateServings);
             db.close();
             return true;
         } catch (Exception e) {
@@ -28,15 +30,14 @@ public class EditRecipeName {
     }
 
     public static void main(String[] args) {
-        System.out.println("Start Editing to recipe name...");
+        System.out.println("Start Editing to recipe...");
         if (args.length == 2) {
             System.out.println("Recipe ID: " + args[0]);
-            System.out.println("Recipe Name: " + args[1]);
-            EditRecipeName newRecipe = new EditRecipeName(Integer.parseInt(args[0]), args[1]);
-            if (newRecipe.editRecipeName()) {
-                System.out.println("Recipe Name is edited.");
+            System.out.println("Recipe Servings: " + args[1]);
+            EditRecipeServings editRecipeServings = new EditRecipeServings(Integer.parseInt(args[0]), Integer.parseInt(args[1]));
+            if (editRecipeServings.editRecipeServings()) {
+                System.out.println("Recipe is edited.");
             }
         }
-
     }
 }

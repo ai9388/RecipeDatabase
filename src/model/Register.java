@@ -1,3 +1,5 @@
+package model;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -51,6 +53,6 @@ public class Register {
             Register register = new Register(args[0], args[1]);
             System.out.println(register.validLogin());
         }
-        System.out.println("Register sequence complete.");
+        System.out.println("model.Register sequence complete.");
     }
 }
