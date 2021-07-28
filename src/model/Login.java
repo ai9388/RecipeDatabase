@@ -16,6 +16,27 @@ public class Login {
     private final String username;
     private final String password;
 
+    private String lastAccessDate;
+    private String lastAccessTime;
+    private String creationDate;
+    private String creationTime;
+
+    public String getLastAccessDate() {
+        return this.lastAccessDate;
+    }
+
+    public String getLastAccessTime() {
+        return this.lastAccessTime;
+    }
+
+    public String getCreationDate() {
+        return this.creationDate;
+    }
+
+    public String getCreationTime() {
+        return this.creationTime;
+    }
+
     public Login(String username, String password) {
         this.username = username;
         this.password = password;
@@ -48,6 +69,24 @@ public class Login {
 
                 stmt.executeUpdate(updateAccessDate);
                 stmt.executeUpdate(updateAccessTime);
+
+                String accessDate = "SELECT chefs SET last_access_date= '" + date + "' WHERE username = '" + username + "'";
+                String accessTime = "SELECT chefs SET last_access_time='" + time + "' WHERE username='" + username + "'";
+                String initCreationDate = "SELECT chefs SET creation_date= '" + date + "' WHERE username = '" + username + "'";
+                String initCreationTime = "SELECT chefs SET creation_time='" + time + "' WHERE username='" + username + "'";
+
+                ResultSet temp1 = stmt.executeQuery(accessDate);
+                lastAccessDate = temp1.getString("last_access_date");
+
+                ResultSet temp2 = stmt.executeQuery(accessTime);
+                lastAccessTime = temp2.getString("last_access_time");
+
+                ResultSet temp3 = stmt.executeQuery(initCreationDate);
+                creationDate = temp3.getString("creation_date");
+
+                ResultSet temp4 = stmt.executeQuery(initCreationTime);
+                creationTime = temp4.getString("creation_time");
+
                 System.out.println("Access date and time updated...");
             }
             db.close();

@@ -11,9 +11,15 @@ public class Register {
     private final String username;
     private final String password;
 
+    private String dateAndTime;
+
     public Register(String username, String password) {
         this.username = username;
         this.password = password;
+    }
+
+    public String getDateAndTime() {
+        return this.dateAndTime;
     }
 
     public boolean validLogin() {
@@ -30,7 +36,7 @@ public class Register {
             Statement stmt = db.createStatement();
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             LocalDateTime now = LocalDateTime.now();
-            String dateAndTime = dtf.format(now);
+            dateAndTime = dtf.format(now);
             dateAndTime = dateAndTime.substring(0, 10) + "', '" + dateAndTime.substring(11, 19);
             String selectUsers = "INSERT INTO chefs(username, password, creation_date, creation_time, last_access_date, last_access_time) " +
                     "VALUES ('" + username + "', '" + password + "', '" + dateAndTime + "', '" + dateAndTime + "');";
