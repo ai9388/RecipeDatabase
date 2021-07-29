@@ -18,9 +18,9 @@ public class Register {
 
     public boolean validLogin() {
         try {
-            if (username.equals("") || password.equals("")) {
-                return false;
-            }
+//            if (username.isEmpty() || password.isEmpty()) {
+//                return false;
+//            }
             Class.forName("org.postgresql.Driver");
             Connection db = DriverManager.getConnection("jdbc:postgresql://reddwarf.cs.rit.edu:5432/p32001f", "p32001f", "eeje5EiRoo9atha3ooLo");
             Statement exists = db.createStatement();

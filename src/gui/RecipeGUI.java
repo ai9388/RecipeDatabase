@@ -23,6 +23,12 @@ public class RecipeGUI extends Application {
     private Stage stage;
     private String username;
     private String password;
+    private Login user;
+    private Label error;
+    private String backgroundColor = "#e8e8e8";
+    private String accentColor1 = "#277582";
+    private String accentColor2 = "#277582";
+    private String textColor = "#e8e8e8";
 
     public void init() {
         username = null;
@@ -83,8 +89,10 @@ public class RecipeGUI extends Application {
         FlowPane top = new FlowPane();
         Label label = new Label("Sign-in Page");
         label.setFont(new Font("Arial", 14));
-        label.setAlignment(Pos.CENTER);
-        boardPane.setTop(label);
+        label.setAlignment(Pos.TOP_CENTER);
+        top.getChildren().add(label);
+        top.setAlignment(Pos.TOP_CENTER);
+        borderPane.setTop(top);
         GridPane gridPane = new GridPane();
         Label iD = new Label("Username");
         Label pwd = new Label("Password");
@@ -92,9 +100,7 @@ public class RecipeGUI extends Application {
         TextField password = new TextField();
         gridPane.addRow(0,iD, username);
         gridPane.addRow(1, pwd, password);
-        this.username = username.getText();
-        this.password = password.getText();
-        Login login = new Login(this.username, this.password);
+
         Button loginButton = new Button();
         loginButton.setText("Login");
         loginButton.setBackground(new Background(new BackgroundFill(Color.web(accentColor1), new CornerRadii(1), new Insets(1))));
@@ -144,6 +150,7 @@ public class RecipeGUI extends Application {
         borderPane.setMinSize(800, 600);
         FlowPane top = new FlowPane();
         Label label = new Label("Register Page");
+        label.setAlignment(Pos.TOP_CENTER);
         label.setFont(new Font("Arial", 14));
         top.getChildren().add(label);
         top.setAlignment(Pos.TOP_CENTER);
@@ -155,17 +162,25 @@ public class RecipeGUI extends Application {
         TextField password = new TextField();
         gridPane.addRow(0,iD, username);
         gridPane.addRow(1, pwd, password);
-        this.username = username.getText();
-        this.password = password.getText();
-        Register register = new Register(this.username, this.password);
+
         Button registerButton = new Button();
         registerButton.setText("Register");
-        if (register.validLogin()){
-            registerButton.setOnAction(event -> homePage(stage));
-        }
-        else{
-            registerButton.setOnAction(event -> registerPage(stage));
-        }
+        registerButton.setOnAction(event -> {
+            this.username = username.getText();
+            this.password = password.getText();
+            Register register = new Register(this.username, this.password);
+            boolean isValidRegister = register.validLogin();
+            if (!isValidRegister){
+                registerPage(stage);
+//                error = new Label("This username is taken.");
+//                error.setTextFill(Color.RED);
+//                gridPane.addRow(4,error);
+            }
+            else{
+                homePage(stage);
+            }
+        });
+
         Button cancelButton = new Button();
         cancelButton.setText("Cancel");
         cancelButton.setOnAction(event -> indexPage(stage));
@@ -192,14 +207,21 @@ public class RecipeGUI extends Application {
         pane.setTop(userIntro);
         // creating title
         Label titleLabel = new Label("Recipes");
-        String welcome = "Welcome back some username";
+        // creating welcome statement
+        String welcome = "Welcome back " + this.username;
         Label welcomeLabel = new Label(welcome);
-        String creation = "Account was created on some date";
+        // creating the account creation time and date
+        String creationDateAndTime = user.getCreationDate() + " at " + user.getCreationTime();
+        String creation = "Account was created on " + creationDateAndTime;
         Label creationLabel = new Label(creation);
-        String lastLogIn = "Last Login was on some date";
+        // creating the last accessed time for the user
+        String lastAccessDateAndTime = user.getLastAccessDate() + " at " + user.getLastAccessTime();
+        String lastLogIn = "Last Login was on " + lastAccessDateAndTime;
         Label lastLogInLabel = new Label(lastLogIn);
         // adding everything to the vbox
         userIntro.getChildren().addAll(titleLabel, welcomeLabel, creationLabel, lastLogInLabel);
+        userIntro.setAlignment(Pos.CENTER);
+        pane.setTop(userIntro);
 
         // on the user pantry page, it should display as
         //          Pantry
@@ -212,7 +234,19 @@ public class RecipeGUI extends Application {
         pane.setLeft(userPantry);
         // creating title
         Label pantryLabel = new Label("Pantry");
+        // creating button for user to view all ingredients
+        Button showAllIngredient = new Button();
+        showAllIngredient.setText("View all ingredients");
+        showAllIngredient.setOnAction(event -> allIngredientsPage(stage));
+        // creating button for user to add an ingredient to their pantry
+        GridPane gp = new GridPane();
+        Label ingredientLabel = new Label("Ingredient");
+        TextField ingredientToAdd = new TextField();
+        Button addIngredientButton = new Button();
+        addIngredientButton.setText("Add");
+        gp.addRow(0, ingredientLabel, ingredientToAdd, addIngredientButton);
 
+        userPantry.getChildren().addAll(pantryLabel, showAllIngredient, gp);
 
         // on the user recipe page, it should display as
         //          Recipes
