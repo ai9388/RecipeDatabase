@@ -1,17 +1,16 @@
 package gui;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
-import javafx.stage.FileChooser;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import model.*;
@@ -37,40 +36,55 @@ public class RecipeGUI extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         this.stage = stage;
+        changeStageSize(stage);
         indexPage(stage);
     }
 
-    private void changeStageSize() {
-        this.stage.minHeightProperty().set(1080);
-        this.stage.maxHeightProperty().set(1080);
-        this.stage.minWidthProperty().set(1920);
-        this.stage.maxWidthProperty().set(1920);
+    private void changeStageSize(Stage stage) {
+        stage.minHeightProperty().set(600);
+        stage.maxHeightProperty().set(600);
+        stage.minWidthProperty().set(800);
+        stage.maxWidthProperty().set(800);
     }
 
     public Stage indexPage(Stage stage) {
         BorderPane borderPane = new BorderPane();
+        borderPane.setMinSize(800, 600);
         if(username == null) {
             VBox signInOptions = new VBox();
             Button signIn = new Button();
             signIn.setText("Sign In");
+            signIn.setBackground(new Background(new BackgroundFill(Color.web(accentColor1), new CornerRadii(1), new Insets(1))));
+            signIn.setTextFill(Color.web(textColor));
+            signIn.setMinSize(200, 75);
+            signIn.setFont(new Font("Arial", 18));
             signIn.setOnAction(event -> signInPage(stage));
             Button register = new Button();
             register.setText("Register");
+            register.setBackground(new Background(new BackgroundFill(Color.web(accentColor1), new CornerRadii(1), new Insets(1))));
+            register.setTextFill(Color.web(textColor));
+            register.setMinSize(200, 75);
+            register.setFont(new Font("Arial", 18));
             register.setOnAction(event -> registerPage(stage));
             signInOptions.getChildren().add(signIn);
             signInOptions.getChildren().add(register);
+            signInOptions.setAlignment(Pos.CENTER);
             borderPane.setCenter(signInOptions);
+            borderPane.setBackground(new Background(new BackgroundFill(Color.web(backgroundColor), new CornerRadii(1), new Insets(1))));
             Scene scene = new Scene(borderPane);
             stage.setScene(scene);
             stage.setTitle("UnderCooked");
+            changeStageSize(stage);
             stage.show();
             return stage;
         }
         return null;
     }
 
-    public Stage signInPage(Stage stage) {
-        BorderPane boardPane = new BorderPane();
+    public void signInPage(Stage stage) {
+        BorderPane borderPane = new BorderPane();
+        borderPane.setMinSize(800, 600);
+        FlowPane top = new FlowPane();
         Label label = new Label("Sign-in Page");
         label.setFont(new Font("Arial", 14));
         label.setAlignment(Pos.CENTER);
@@ -87,31 +101,57 @@ public class RecipeGUI extends Application {
         Login login = new Login(this.username, this.password);
         Button loginButton = new Button();
         loginButton.setText("Login");
-        if (login.validLogin()){
-            loginButton.setOnAction(event -> homePage(stage));
-        }
-        else{
-            loginButton.setOnAction(event -> signInPage(stage));
-        }
+        loginButton.setBackground(new Background(new BackgroundFill(Color.web(accentColor1), new CornerRadii(1), new Insets(1))));
+        loginButton.setPrefSize(60, 15);
+        loginButton.setTextFill(Color.web(textColor));
+        loginButton.setAlignment(Pos.CENTER);
         Button cancelButton = new Button();
         cancelButton.setText("Cancel");
+        cancelButton.setBackground(new Background(new BackgroundFill(Color.web(accentColor1), new CornerRadii(1), new Insets(1))));
+        cancelButton.setPrefSize(60, 15);
+        cancelButton.setTextFill(Color.web(textColor));
+        cancelButton.setAlignment(Pos.CENTER);
         cancelButton.setOnAction(event -> indexPage(stage));
         gridPane.addRow(2,loginButton);
         gridPane.addRow(3,cancelButton);
-        boardPane.setCenter(gridPane);
-        Scene scene = new Scene(boardPane);
+        gridPane.setAlignment(Pos.CENTER);
+        borderPane.setCenter(gridPane);
+        borderPane.setBackground(new Background(new BackgroundFill(Color.web(backgroundColor), new CornerRadii(1), new Insets(1))));
+        loginButton.setOnAction(event -> {
+            this.username = username.getText();
+            this.password = password.getText();
+            user = new Login(this.username, this.password);
+            boolean isValidLogin = user.validLogin();
+            if(!isValidLogin) {
+//                username.clear();
+//                password.clear();
+//                error = new Label("This username is not recognized.");
+//                error.setTextFill(Color.RED);
+//                gridPane.addRow(4,error);
+                signInPage(stage);
+            }
+            else     {
+                homePage(stage);
+
+            }
+        });
+
+        Scene scene = new Scene(borderPane);
         stage.setScene(scene);
         stage.setTitle("Sign-in Page");
-        stage.show();
-        return stage;
+        //stage.show();
+//        return stage;
     }
 
     public Stage registerPage(Stage stage) {
         BorderPane borderPane = new BorderPane();
+        borderPane.setMinSize(800, 600);
+        FlowPane top = new FlowPane();
         Label label = new Label("Register Page");
         label.setFont(new Font("Arial", 14));
-        label.setAlignment(Pos.CENTER);
-        borderPane.setTop(label);
+        top.getChildren().add(label);
+        top.setAlignment(Pos.TOP_CENTER);
+        borderPane.setTop(top);
         GridPane gridPane = new GridPane();
         Label iD = new Label("Username");
         Label pwd = new Label("Password");
@@ -139,12 +179,14 @@ public class RecipeGUI extends Application {
         Scene scene = new Scene(borderPane);
         stage.setScene(scene);
         stage.setTitle("Register Page");
-        stage.show();
+        changeStageSize(stage);
+        //stage.show();
         return stage;
     }
 
     public Stage homePage(Stage stage){
         BorderPane pane = new BorderPane();
+        pane.setMinSize(800, 600);
         // on the user intro, it should display as
         //          Recipes
         //  Welcome back [username]
@@ -187,7 +229,8 @@ public class RecipeGUI extends Application {
         Scene scene = new Scene(pane);
         stage.setScene(scene);
         stage.setTitle("Home Page");
-        stage.show();
+        changeStageSize(stage);
+        //stage.show();
         return stage;
     }
 
@@ -209,7 +252,8 @@ public class RecipeGUI extends Application {
         Scene scene = new Scene(borderPane);
         stage.setScene(scene);
         stage.setTitle("User Ingredients");
-        stage.show();
+        changeStageSize(stage);
+        //stage.show();
         return stage;
     }
 
@@ -229,7 +273,8 @@ public class RecipeGUI extends Application {
         Scene scene = new Scene(borderPane);
         stage.setScene(scene);
         stage.setTitle("Search Recipe By Name");
-        stage.show();
+        changeStageSize(stage);
+        //stage.show();
         return stage;
     }
     public Stage searchRecipeByCategoryPage(Stage stage) {
@@ -248,7 +293,8 @@ public class RecipeGUI extends Application {
         Scene scene = new Scene(borderPane);
         stage.setScene(scene);
         stage.setTitle("Search Recipe By Category");
-        stage.show();
+        changeStageSize(stage);
+        //stage.show();
         return stage;
     }
     public Stage searchRecipeByIngredientsPage(Stage stage) {

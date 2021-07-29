@@ -70,23 +70,17 @@ public class Login {
                 stmt.executeUpdate(updateAccessDate);
                 stmt.executeUpdate(updateAccessTime);
 
-                String accessDate = "SELECT chefs SET last_access_date= '" + date + "' WHERE username = '" + username + "'";
-                String accessTime = "SELECT chefs SET last_access_time='" + time + "' WHERE username='" + username + "'";
-                String initCreationDate = "SELECT chefs SET creation_date= '" + date + "' WHERE username = '" + username + "'";
-                String initCreationTime = "SELECT chefs SET creation_time='" + time + "' WHERE username='" + username + "'";
-
-                ResultSet temp1 = stmt.executeQuery(accessDate);
-                lastAccessDate = temp1.getString("last_access_date");
-
-                ResultSet temp2 = stmt.executeQuery(accessTime);
-                lastAccessTime = temp2.getString("last_access_time");
+                String initCreationDate = "SELECT creation_date FROM chefs WHERE username ='" + username + "'";
+                String initCreationTime = "SELECT creation_time FROM chefs WHERE username='" + username + "'";
 
                 ResultSet temp3 = stmt.executeQuery(initCreationDate);
-                creationDate = temp3.getString("creation_date");
-
+                if (temp3.next()) {
+                    creationDate = temp3.getDate("creation_date").toString();
+                }
                 ResultSet temp4 = stmt.executeQuery(initCreationTime);
-                creationTime = temp4.getString("creation_time");
-
+                if (temp4.next()) {
+                    creationTime = temp4.getTime("creation_time").toString();
+                }
                 System.out.println("Access date and time updated...");
             }
             db.close();
