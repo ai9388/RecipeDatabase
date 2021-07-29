@@ -16,25 +16,25 @@ public class Login {
     private final String username;
     private final String password;
 
-    private String lastAccessDate;
-    private String lastAccessTime;
+    private String date;
+    private String time;
     private String creationDate;
     private String creationTime;
 
     public String getLastAccessDate() {
-        return this.lastAccessDate;
+        return date;
     }
 
     public String getLastAccessTime() {
-        return this.lastAccessTime;
+        return time;
     }
 
     public String getCreationDate() {
-        return this.creationDate;
+        return creationDate;
     }
 
     public String getCreationTime() {
-        return this.creationTime;
+        return creationTime;
     }
 
     public Login(String username, String password) {
@@ -61,8 +61,8 @@ public class Login {
                 DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                 LocalDateTime now = LocalDateTime.now();
                 String dateAndTime = dtf.format(now);
-                String date = dateAndTime.substring(0, 10);
-                String time = dateAndTime.substring(11, 19);
+                date = dateAndTime.substring(0, 10);
+                time = dateAndTime.substring(11, 19);
 
                 String updateAccessDate = "UPDATE chefs SET last_access_date= '" + date + "' WHERE username = '" + username + "'";
                 String updateAccessTime = "UPDATE chefs SET last_access_time='" + time + "' WHERE username='" + username + "'";

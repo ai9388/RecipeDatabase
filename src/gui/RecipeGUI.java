@@ -29,10 +29,6 @@ public class RecipeGUI extends Application {
         password = null;
     }
 
-    public String getUsername() {
-        return this.username;
-    }
-
     @Override
     public void start(Stage stage) throws Exception {
         this.stage = stage;
@@ -194,6 +190,7 @@ public class RecipeGUI extends Application {
         //  Last Login was on [LastLoginTime]
         VBox userIntro = new VBox();
         pane.setTop(userIntro);
+        // creating title
         Label titleLabel = new Label("Recipes");
         String welcome = "Welcome back some username";
         Label welcomeLabel = new Label(welcome);
@@ -201,6 +198,7 @@ public class RecipeGUI extends Application {
         Label creationLabel = new Label(creation);
         String lastLogIn = "Last Login was on some date";
         Label lastLogInLabel = new Label(lastLogIn);
+        // adding everything to the vbox
         userIntro.getChildren().addAll(titleLabel, welcomeLabel, creationLabel, lastLogInLabel);
 
         // on the user pantry page, it should display as
@@ -212,6 +210,7 @@ public class RecipeGUI extends Application {
         // [button to open allIngredientsPage]
         VBox userPantry = new VBox();
         pane.setLeft(userPantry);
+        // creating title
         Label pantryLabel = new Label("Pantry");
 
 
