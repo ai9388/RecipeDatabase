@@ -1,22 +1,15 @@
 package gui;
 
+import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
-import javafx.application.Application;
 import javafx.stage.Stage;
 import model.*;
-
-import java.util.Scanner;
-import java.util.concurrent.atomic.LongAccumulator;
 
 
 public class RecipeGUI extends Application {
@@ -52,7 +45,7 @@ public class RecipeGUI extends Application {
     public Stage indexPage(Stage stage) {
         BorderPane borderPane = new BorderPane();
         borderPane.setMinSize(800, 600);
-        if(username == null) {
+        if (username == null) {
             VBox signInOptions = new VBox();
             Button signIn = new Button();
             signIn.setText("Sign In");
@@ -98,7 +91,7 @@ public class RecipeGUI extends Application {
         Label pwd = new Label("Password");
         TextField username = new TextField();
         TextField password = new TextField();
-        gridPane.addRow(0,iD, username);
+        gridPane.addRow(0, iD, username);
         gridPane.addRow(1, pwd, password);
 
         Button loginButton = new Button();
@@ -114,8 +107,8 @@ public class RecipeGUI extends Application {
         cancelButton.setTextFill(Color.web(textColor));
         cancelButton.setAlignment(Pos.CENTER);
         cancelButton.setOnAction(event -> indexPage(stage));
-        gridPane.addRow(2,loginButton);
-        gridPane.addRow(3,cancelButton);
+        gridPane.addRow(2, loginButton);
+        gridPane.addRow(3, cancelButton);
         gridPane.setAlignment(Pos.CENTER);
         borderPane.setCenter(gridPane);
         borderPane.setBackground(new Background(new BackgroundFill(Color.web(backgroundColor), new CornerRadii(1), new Insets(1))));
@@ -124,15 +117,14 @@ public class RecipeGUI extends Application {
             this.password = password.getText();
             user = new Login(this.username, this.password);
             boolean isValidLogin = user.validLogin();
-            if(!isValidLogin) {
+            if (!isValidLogin) {
 //                username.clear();
 //                password.clear();
 //                error = new Label("This username is not recognized.");
 //                error.setTextFill(Color.RED);
 //                gridPane.addRow(4,error);
                 signInPage(stage);
-            }
-            else     {
+            } else {
                 homePage(stage);
 
             }
@@ -160,7 +152,7 @@ public class RecipeGUI extends Application {
         Label pwd = new Label("Password");
         TextField username = new TextField();
         TextField password = new TextField();
-        gridPane.addRow(0,iD, username);
+        gridPane.addRow(0, iD, username);
         gridPane.addRow(1, pwd, password);
 
         Button registerButton = new Button();
@@ -170,13 +162,12 @@ public class RecipeGUI extends Application {
             this.password = password.getText();
             Register register = new Register(this.username, this.password);
             boolean isValidRegister = register.validLogin();
-            if (!isValidRegister){
+            if (!isValidRegister) {
                 registerPage(stage);
 //                error = new Label("This username is taken.");
 //                error.setTextFill(Color.RED);
 //                gridPane.addRow(4,error);
-            }
-            else{
+            } else {
                 homePage(stage);
             }
         });
@@ -184,8 +175,8 @@ public class RecipeGUI extends Application {
         Button cancelButton = new Button();
         cancelButton.setText("Cancel");
         cancelButton.setOnAction(event -> indexPage(stage));
-        gridPane.addRow(2,registerButton);
-        gridPane.addRow(3,cancelButton);
+        gridPane.addRow(2, registerButton);
+        gridPane.addRow(3, cancelButton);
         borderPane.setCenter(gridPane);
         Scene scene = new Scene(borderPane);
         stage.setScene(scene);
@@ -195,7 +186,7 @@ public class RecipeGUI extends Application {
         return stage;
     }
 
-    public Stage homePage(Stage stage){
+    public Stage homePage(Stage stage) {
         BorderPane pane = new BorderPane();
         pane.setMinSize(800, 600);
         // on the user intro, it should display as
@@ -245,14 +236,27 @@ public class RecipeGUI extends Application {
         Button addIngredientButton = new Button();
         addIngredientButton.setText("Add");
         gp.addRow(0, ingredientLabel, ingredientToAdd, addIngredientButton);
-
+        // table view should hold {ingredient_name, ingredient_quantity}
+        // TODO should make unique classes for ingredients and recipes later on
+        TableView<String> table = new TableView<String>();
+        TableColumn<String, String> ingredientNameColumn = new TableColumn<String, String>("Ingredient Name");
+        TableColumn<String, Integer> ingredientQuantityColumn = new TableColumn<String, Integer>("Quantity");
         userPantry.getChildren().addAll(pantryLabel, showAllIngredient, gp);
 
         // on the user recipe page, it should display as
         //          Recipes
-        // [List of all recipes]
+        // [Create new recipe]
+        // [some recipe] [Edit] [Delete]
         VBox userRecipe = new VBox();
         pane.setCenter(userRecipe);
+        // creating title
+        Label recipeLabel = new Label("Recipes");
+        // creating button for user to create new recipe
+        Button createRecipeButton = new Button();
+        createRecipeButton.setText("Create new recipe");
+        createRecipeButton.setOnAction(event -> makeRecipe(stage));
+        // showing all the recipes
+
 
 
         VBox userCategories = new VBox();
@@ -271,16 +275,15 @@ public class RecipeGUI extends Application {
         BorderPane borderPane = new BorderPane();
         GridPane gridPane = new GridPane();
         GetUserIngredients ingredients = new GetUserIngredients(this.username);
-        if (ingredients.getIngredients().equals("")){
+        if (ingredients.getIngredients().equals("")) {
             System.out.println("User has no ingredients");
-        }
-        else{
+        } else {
             String allIngredients = ingredients.getIngredients();
             System.out.println(allIngredients);
         }
         Button back = new Button();
         back.setText("Return");
-        gridPane.addRow(0,back);
+        gridPane.addRow(0, back);
         back.setOnAction(event -> homePage(stage));
         Scene scene = new Scene(borderPane);
         stage.setScene(scene);
@@ -299,7 +302,7 @@ public class RecipeGUI extends Application {
         Label name = new Label("Recipe Name");
         name.setFont(new Font("Ariel", 14));
         TextField recipeName = new TextField();
-        gridPane.addRow(0,name,recipeName);
+        gridPane.addRow(0, name, recipeName);
         SearchRecipes searchRecipes = new SearchRecipes(recipeName.getText());
         System.out.println(searchRecipes.getRecipes());
         borderPane.setCenter(gridPane);
@@ -310,16 +313,17 @@ public class RecipeGUI extends Application {
         //stage.show();
         return stage;
     }
+
     public Stage searchRecipeByCategoryPage(Stage stage) {
         BorderPane borderPane = new BorderPane();
         GridPane gridPane = new GridPane();
-        Label title = new Label("PLease insert category name for searchinf");
+        Label title = new Label("PLease insert category name for searching");
         title.setFont(new Font("Ariel", 14));
         borderPane.setTop(title);
         Label name = new Label("Category Name");
         name.setFont(new Font("Ariel", 14));
         TextField categoryName = new TextField();
-        gridPane.addRow(0,name,categoryName);
+        gridPane.addRow(0, name, categoryName);
         SearchRecipesByCategory byCategory = new SearchRecipesByCategory(categoryName.getText());
         System.out.println(byCategory.getRecipes());
         borderPane.setCenter(gridPane);
@@ -330,6 +334,7 @@ public class RecipeGUI extends Application {
         //stage.show();
         return stage;
     }
+
     public Stage searchRecipeByIngredientsPage(Stage stage) {
         return null;
     }
@@ -338,7 +343,6 @@ public class RecipeGUI extends Application {
         return null;
     }
 
-    
 
 //    @Override
 //    public void update() {
