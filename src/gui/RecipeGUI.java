@@ -5,11 +5,15 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import model.*;
+import model.databaseObjects.*;
+
+import java.util.ArrayList;
 
 
 public class RecipeGUI extends Application {
@@ -226,6 +230,7 @@ public class RecipeGUI extends Application {
         userIntro.setAlignment(Pos.CENTER);
         pane.setTop(userIntro);
 
+        ////////////USER PANTRY PAGE/////////////////////
         // on the user pantry page, it should display as
         //          Pantry
         // [button to add ingredient one at a time]
@@ -235,12 +240,15 @@ public class RecipeGUI extends Application {
         // [button to open allIngredientsPage]
         VBox userPantry = new VBox();
         pane.setLeft(userPantry);
+
         // creating title
         Label pantryLabel = new Label("Pantry");
+
         // creating button for user to view all ingredients
         Button showAllIngredient = new Button();
         showAllIngredient.setText("View all ingredients");
         showAllIngredient.setOnAction(event -> allIngredientsPage(stage));
+
         // creating button for user to add an ingredient to their pantry
         GridPane gp = new GridPane();
         Label ingredientLabel = new Label("Ingredient");
@@ -248,13 +256,35 @@ public class RecipeGUI extends Application {
         Button addIngredientButton = new Button();
         addIngredientButton.setText("Add");
         gp.addRow(0, ingredientLabel, ingredientToAdd, addIngredientButton);
-        // table view should hold {ingredient_name, ingredient_quantity}
-        // TODO should make unique classes for ingredients and recipes later on
-        TableView<String> table = new TableView<String>();
-        TableColumn<String, String> ingredientNameColumn = new TableColumn<String, String>("Ingredient Name");
-        TableColumn<String, Integer> ingredientQuantityColumn = new TableColumn<String, Integer>("Quantity");
-        userPantry.getChildren().addAll(pantryLabel, showAllIngredient, gp);
 
+        // creating table to hold values
+        TableView<Ingredient> table = new TableView<Ingredient>();
+
+        // creating the first column to hold ingredient name
+        TableColumn<Ingredient, String> ingredientNameColumn = new TableColumn<Ingredient, String>("Name");
+        ingredientNameColumn.setCellValueFactory(new PropertyValueFactory<Ingredient, String>("name"));
+
+        // creating the second column to hold the ingredient quantity
+        TableColumn<Ingredient, Integer> ingredientQuantityColumn = new TableColumn<Ingredient, Integer>("Quantity");
+        ingredientQuantityColumn.setCellValueFactory(new PropertyValueFactory<Ingredient, Integer>("quantity"));
+
+        // adding the columns to the table view
+        table.getColumns().add(ingredientNameColumn);
+        table.getColumns().add(ingredientQuantityColumn);
+
+        // adjusting column size to look better
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        // add all ingredients and their quantity to the table
+        GetUserIngredients userIngredients = new GetUserIngredients(username);
+
+        for (int i = 0; i < userIngredients.getIngredients().size(); i++) {
+            table.getItems().add(userIngredients.getIngredients().get(i));
+        }
+
+        userPantry.getChildren().addAll(pantryLabel, showAllIngredient, gp, table);
+
+        ////////////USER RECIPE PAGE/////////////////////
         // on the user recipe page, it should display as
         //          Recipes
         // [Create new recipe]
@@ -268,8 +298,6 @@ public class RecipeGUI extends Application {
         createRecipeButton.setText("Create new recipe");
         createRecipeButton.setOnAction(event -> makeRecipe(stage));
         // showing all the recipes
-
-
 
         VBox userCategories = new VBox();
         pane.setRight(userCategories);
@@ -369,12 +397,6 @@ public class RecipeGUI extends Application {
     public Stage makeRecipe(Stage stage) {
         return null;
     }
-
-
-//    @Override
-//    public void update() {
-//
-//    }
 
     public static void main(String[] args) {
         if (args.length != 0) {
