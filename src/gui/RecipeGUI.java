@@ -111,7 +111,9 @@ public class RecipeGUI extends Application {
         cancelButton.setPrefSize(60, 15);
         cancelButton.setTextFill(Color.web(textColor));
         cancelButton.setAlignment(Pos.CENTER);
-        cancelButton.setOnAction(event -> indexPage(stage));
+        cancelButton.setOnAction(event -> {
+            indexPage(stage);
+        });
         gridPane.addRow(2, loginButton);
         gridPane.addRow(3, cancelButton);
         gridPane.setAlignment(Pos.CENTER);
@@ -156,6 +158,7 @@ public class RecipeGUI extends Application {
         Label iD = new Label("Username");
         Label pwd = new Label("Password");
         TextField username = new TextField();
+        username.setPromptText("Enter Username");
         TextField password = new TextField();
         gridPane.addRow(0, iD, username);
         gridPane.addRow(1, pwd, password);
