@@ -61,6 +61,19 @@ public class RecipeGUI extends Application {
 
 
     /**
+     * Helper button to return the user to their home page
+     *
+     * @return button that sends the user home
+     */
+    public Button backToHomeButton(){
+        Button backToHome = new Button();
+        backToHome.setText("<-- Return to Home Page");
+        backToHome.setOnAction(e -> homePage(stage));
+        return backToHome;
+    }
+
+
+    /**
      * Sets the stage size to an appropriate amount
      *
      * @param stage current stage
@@ -625,19 +638,6 @@ public class RecipeGUI extends Application {
 
 
     /**
-     * Helper button to return the user to their home page
-     *
-     * @return button that sends the user home
-     */
-    public Button backToHomeButton(){
-        Button backToHome = new Button();
-        backToHome.setText("<-- Return to Home Page");
-        backToHome.setOnAction(e -> homePage(stage));
-        return backToHome;
-    }
-
-
-    /**
      * Shows the user a table view of all of the recipes that were found via their category search
      *
      * @param stage current stage information
@@ -673,8 +673,8 @@ public class RecipeGUI extends Application {
     /**
      * Shows the user a table view of all of the recipes that were found via ingredient search
      *
-     * @param stage
-     * @return
+     * @param stage current stage information
+     * @return the stage information
      */
     public Stage searchRecipeByIngredientsPage(Stage stage) {
         BorderPane borderPane = new BorderPane();
