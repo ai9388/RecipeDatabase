@@ -58,14 +58,18 @@ public class RecipeGUI extends Application {
             signIn.setTextFill(Color.web(textColor));
             signIn.setMinSize(200, 75);
             signIn.setFont(new Font("Arial", 18));
-            signIn.setOnAction(event -> signInPage(stage));
+            signIn.setOnAction(event -> {
+                signInPage(stage);
+            });
             Button register = new Button();
             register.setText("Register");
             register.setBackground(new Background(new BackgroundFill(Color.web(accentColor1), new CornerRadii(1), new Insets(1))));
             register.setTextFill(Color.web(textColor));
             register.setMinSize(200, 75);
             register.setFont(new Font("Arial", 18));
-            register.setOnAction(event -> registerPage(stage));
+            register.setOnAction(event -> {
+                registerPage(stage);
+            });
             signInOptions.getChildren().add(signIn);
             signInOptions.getChildren().add(register);
             signInOptions.setAlignment(Pos.CENTER);
@@ -182,7 +186,9 @@ public class RecipeGUI extends Application {
 
         Button cancelButton = new Button();
         cancelButton.setText("Cancel");
-        cancelButton.setOnAction(event -> indexPage(stage));
+        cancelButton.setOnAction(event -> {
+            indexPage(stage);
+        });
         gridPane.addRow(2, registerButton);
         gridPane.addRow(3, cancelButton);
         borderPane.setCenter(gridPane);
@@ -251,7 +257,9 @@ public class RecipeGUI extends Application {
         // creating button for user to view all ingredients
         Button showAllIngredient = new Button();
         showAllIngredient.setText("View all ingredients");
-        showAllIngredient.setOnAction(event -> allIngredientsPage(stage));
+        showAllIngredient.setOnAction(event -> {
+            allIngredientsPage(stage);
+        });
 
         // creating button for user to add an ingredient to their pantry
         GridPane gp = new GridPane();
@@ -309,7 +317,9 @@ public class RecipeGUI extends Application {
         // creating button for user to create new recipe
         Button createRecipeButton = new Button();
         createRecipeButton.setText("Create new recipe");
-        createRecipeButton.setOnAction(event -> makeRecipe(stage));
+        createRecipeButton.setOnAction(event -> {
+            makeRecipe(stage);
+        });
         // showing all the recipes
 
         VBox userCategories = new VBox();
@@ -337,7 +347,9 @@ public class RecipeGUI extends Application {
         Button back = new Button();
         back.setText("Return");
         gridPane.addRow(0, back);
-        back.setOnAction(event -> homePage(stage));
+        back.setOnAction(event -> {
+            homePage(stage);
+        });
         Scene scene = new Scene(borderPane);
         stage.setScene(scene);
         stage.setTitle("User Ingredients");
