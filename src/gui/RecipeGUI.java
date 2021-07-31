@@ -281,15 +281,8 @@ public class RecipeGUI extends Application {
         // creating title
         Label pantryLabel = new Label("Pantry");
 
-        // creating button for user to view all ingredients
-        Button showAllIngredient = new Button();
-        showAllIngredient.setText("View all ingredients");
-        showAllIngredient.setOnAction(event -> {
-            allIngredientsPage(stage);
-        });
-
         // creating button for user to add an ingredient to their pantry
-        GridPane gp = new GridPane();
+        GridPane pantryGridPane = new GridPane();
         Label ingredientLabel = new Label("Ingredient: ");
         Label quantityLabel = new Label("Quantity: ");
         TextField ingredientToAdd = new TextField();
@@ -302,9 +295,9 @@ public class RecipeGUI extends Application {
             addIngred.addIngredient();
             homePage(stage);
         });
-        gp.addRow(0, ingredientLabel, ingredientToAdd);
-        gp.addRow(1, quantityLabel, quantityToAdd);
-        gp.addRow(2, addIngredientButton);
+        pantryGridPane.addRow(0, ingredientLabel, ingredientToAdd);
+        pantryGridPane.addRow(1, quantityLabel, quantityToAdd);
+        pantryGridPane.addRow(2, addIngredientButton);
 
         // creating table to hold values
         TableView<Ingredient> table = new TableView<Ingredient>();
@@ -331,18 +324,41 @@ public class RecipeGUI extends Application {
             table.getItems().add(userIngredients.getIngredients().get(i));
         }
 
-        userPantry.getChildren().addAll(pantryLabel, showAllIngredient, gp, table);
+        // adding children to the vbox
+        userPantry.getChildren().addAll(pantryLabel, pantryGridPane, table);
 
         ////////////USER RECIPE PAGE/////////////////////
         // on the user recipe page, it should display as
         //          Recipes
-        // [Create new recipe]
-        // [some recipe] [Edit] [Delete]
+        // _____ [edit button]
+        // _____ [delete button]
+        //      [create button]
+        // [table view with all user recipes]
         VBox userRecipe = new VBox();
         pane.setCenter(userRecipe);
+        GridPane recipeGridPane = new GridPane();
         // creating title
         Label recipeLabel = new Label("Recipes");
-        // creating button for user to create new recipe
+
+        // creating edit button
+        Label editLabel = new Label("Edit a recipe: ");
+        TextField recipeToEdit = new TextField();
+        Button editRecipeButton = new Button();
+        editRecipeButton.setText("Edit");
+//        editRecipeButton.setOnAction(event -> {
+//            editRecipe(stage);
+//        });
+
+        // creating delete button
+        Label deleteLabel = new Label("Delete a recipe: ");
+        TextField recipeToDelete = new TextField();
+        Button deleteRecipeButton = new Button();
+        deleteRecipeButton.setText("Delete");
+//        deleteRecipeButton.setOnAction(event -> {
+//            deleteRecipe(stage);
+//        });
+
+        // creating create button
         Button createRecipeButton = new Button();
         createRecipeButton.setText("Create new recipe");
 
@@ -386,30 +402,6 @@ public class RecipeGUI extends Application {
         Scene scene = new Scene(pane);
         stage.setScene(scene);
         stage.setTitle("Home Page");
-        changeStageSize(stage);
-        //stage.show();
-        return stage;
-    }
-
-    public Stage allIngredientsPage(Stage stage) {
-        BorderPane borderPane = new BorderPane();
-        GridPane gridPane = new GridPane();
-        GetUserIngredients ingredients = new GetUserIngredients(this.username);
-        if (ingredients.getIngredients().equals("")) {
-            System.out.println("User has no ingredients");
-        } else {
-            ArrayList<Ingredient> allIngredients = ingredients.getIngredients();
-            System.out.println(allIngredients);
-        }
-        Button back = new Button();
-        back.setText("Return");
-        gridPane.addRow(0, back);
-        back.setOnAction(event -> {
-            homePage(stage);
-        });
-        Scene scene = new Scene(borderPane);
-        stage.setScene(scene);
-        stage.setTitle("User Ingredients");
         changeStageSize(stage);
         //stage.show();
         return stage;
@@ -488,7 +480,10 @@ public class RecipeGUI extends Application {
         // making the table look nicer
         recipeTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        // adding
+        // adding the column to the table
+        recipeTable.getColumns().add(recipeNameColumn);
+
+        // filling in the table
         SearchRecipesByIngredients recipesByIngredients = new SearchRecipesByIngredients(username);
 
         for (int i = 0; i < recipesByIngredients.getRecipes().size(); i++) {
