@@ -1,5 +1,6 @@
 package gui;
 
+// imports
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,10 +17,20 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import model.*;
 import model.databaseObjects.*;
-
 import java.util.ArrayList;
 
 
+/**
+ * @author Team 3: UnderCooked
+ *          Nicholas Deary
+ *          Benson Yan
+ *          Alex Iacob
+ *
+ * @filename RecipeGUI.java
+ *
+ * File runs a javaFx application implementation of recipe database project.
+ * File uses model classes to connect to given database and display data accordingly
+ */
 public class RecipeGUI extends Application {
     private Stage stage;
     private String username;
@@ -32,10 +43,12 @@ public class RecipeGUI extends Application {
     private final String accentColor2 = "#277582";
     private final String textColor = "#e8e8e8";
 
+
     public void init() {
         username = null;
         password = null;
     }
+
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -44,6 +57,12 @@ public class RecipeGUI extends Application {
         indexPage(stage);
     }
 
+
+    /**
+     * Sets the stage size to an appropriate amount
+     *
+     * @param stage current stage
+     */
     private void changeStageSize(Stage stage) {
         stage.minHeightProperty().set(600);
         stage.maxHeightProperty().set(600);
@@ -51,11 +70,20 @@ public class RecipeGUI extends Application {
         stage.maxWidthProperty().set(800);
     }
 
+
+    /**
+     * Shows the user the index page
+     * Page contains two buttons that lead to the sign in and register pages
+     *
+     * @param stage current stage information
+     * @return stage information
+     */
     public Stage indexPage(Stage stage) {
         BorderPane borderPane = new BorderPane();
         borderPane.setMinSize(800, 600);
         if (username == null) {
             VBox signInOptions = new VBox();
+            // making sign in button and giving it design
             Button signIn = new Button();
             signIn.setText("Sign In");
             signIn.setBackground(new Background(new BackgroundFill(Color.web(accentColor1), new CornerRadii(1), new Insets(1))));
@@ -65,6 +93,8 @@ public class RecipeGUI extends Application {
             signIn.setOnAction(event -> {
                 signInPage(stage);
             });
+
+            // making register button and giving it design
             Button register = new Button();
             register.setText("Register");
             register.setBackground(new Background(new BackgroundFill(Color.web(accentColor1), new CornerRadii(1), new Insets(1))));
@@ -74,12 +104,16 @@ public class RecipeGUI extends Application {
             register.setOnAction(event -> {
                 registerPage(stage);
             });
+
+            // adding both buttons to the page
             signInOptions.getChildren().add(signIn);
             signInOptions.getChildren().add(register);
             signInOptions.setAlignment(Pos.CENTER);
             borderPane.setCenter(signInOptions);
             borderPane.setBackground(new Background(new BackgroundFill(Color.web(backgroundColor), new CornerRadii(1), new Insets(1))));
             Scene scene = new Scene(borderPane);
+
+            // setting the scene for the application
             stage.setScene(scene);
             stage.setTitle("UnderCooked");
             changeStageSize(stage);
@@ -89,15 +123,27 @@ public class RecipeGUI extends Application {
         return null;
     }
 
+
+    /**
+     * Shows the user the sign in page for an existing account
+     * Page contains two text fields and two buttons
+     * Signing in checks if the user name exists and gets the account information
+     *
+     * @param stage current stage information
+     */
     public void signInPage(Stage stage) {
         BorderPane borderPane = new BorderPane();
         borderPane.setMinSize(800, 600);
         FlowPane top = new FlowPane();
+
+        // creating the title
         Label label = new Label("Sign-in Page");
         label.setFont(new Font("Arial", 14));
         label.setAlignment(Pos.TOP_CENTER);
         top.getChildren().add(label);
         top.setAlignment(Pos.TOP_CENTER);
+
+        // creating the buttons and adding to the gridpane
         borderPane.setTop(top);
         GridPane gridPane = new GridPane();
         Label iD = new Label("Username");
@@ -107,12 +153,15 @@ public class RecipeGUI extends Application {
         gridPane.addRow(0, iD, username);
         gridPane.addRow(1, pwd, password);
 
+        // making login button
         Button loginButton = new Button();
         loginButton.setText("Login");
         loginButton.setBackground(new Background(new BackgroundFill(Color.web(accentColor1), new CornerRadii(1), new Insets(1))));
         loginButton.setPrefSize(60, 15);
         loginButton.setTextFill(Color.web(textColor));
         loginButton.setAlignment(Pos.CENTER);
+
+        //making cancel button
         Button cancelButton = new Button();
         cancelButton.setText("Cancel");
         cancelButton.setBackground(new Background(new BackgroundFill(Color.web(accentColor1), new CornerRadii(1), new Insets(1))));
@@ -122,11 +171,15 @@ public class RecipeGUI extends Application {
         cancelButton.setOnAction(event -> {
             indexPage(stage);
         });
+
+        // adding to grid pane
         gridPane.addRow(2, loginButton);
         gridPane.addRow(3, cancelButton);
         gridPane.setAlignment(Pos.CENTER);
         borderPane.setCenter(gridPane);
         borderPane.setBackground(new Background(new BackgroundFill(Color.web(backgroundColor), new CornerRadii(1), new Insets(1))));
+
+        // setting action for login button to log the user in
         loginButton.setOnAction(event -> {
             this.username = username.getText();
             this.password = password.getText();
@@ -145,22 +198,35 @@ public class RecipeGUI extends Application {
             }
         });
 
+        // setting the stage
         Scene scene = new Scene(borderPane);
         stage.setScene(scene);
         stage.setTitle("Sign-in Page");
-        //stage.show();
-//        return stage;
     }
 
+
+    /**
+     * Shows the user the register page for a NONexisting account
+     * Page contains two text field and two buttons
+     * Registering first checks if there is already an existing account, if there is no
+     * account with the same username, then it calls a model class to create an account
+     *
+     * @param stage current stage information
+     * @return stage information
+     */
     public Stage registerPage(Stage stage) {
         BorderPane borderPane = new BorderPane();
         borderPane.setMinSize(800, 600);
         FlowPane top = new FlowPane();
+
+        // creating the title
         Label label = new Label("Register Page");
         label.setAlignment(Pos.TOP_CENTER);
         label.setFont(new Font("Arial", 14));
         top.getChildren().add(label);
         top.setAlignment(Pos.TOP_CENTER);
+
+        // creating the buttons and adding to the gridpane
         borderPane.setTop(top);
         GridPane gridPane = new GridPane();
         Label iD = new Label("Username");
@@ -171,6 +237,7 @@ public class RecipeGUI extends Application {
         gridPane.addRow(0, iD, username);
         gridPane.addRow(1, pwd, password);
 
+        // creating the register button and settings its action
         Button registerButton = new Button();
         registerButton.setText("Register");
         registerButton.setOnAction(event -> {
@@ -188,14 +255,19 @@ public class RecipeGUI extends Application {
             }
         });
 
+        // creating cancel cutton and setting its action
         Button cancelButton = new Button();
         cancelButton.setText("Cancel");
         cancelButton.setOnAction(event -> {
             indexPage(stage);
         });
+
+        // adding to grid pane
         gridPane.addRow(2, registerButton);
         gridPane.addRow(3, cancelButton);
         borderPane.setCenter(gridPane);
+
+        // setting the stage
         Scene scene = new Scene(borderPane);
         stage.setScene(scene);
         stage.setTitle("Register Page");
@@ -204,6 +276,14 @@ public class RecipeGUI extends Application {
         return stage;
     }
 
+
+    /**
+     * Shows the user their pantry, recipes, and created categories
+     * On this page, the user can also add to their pantry
+     *
+     * @param stage current stage information
+     * @return the stage information
+     */
     public Stage homePage(Stage stage) {
         BorderPane pane = new BorderPane();
         pane.setMinSize(800, 600);
@@ -411,6 +491,38 @@ public class RecipeGUI extends Application {
         return stage;
     }
 
+
+    /**
+     * Shows the user an individual recipe
+     *
+     * @param stage current stage information
+     * @param recipe the recipe that the user searched for
+     * @return the stage information
+     */
+    public Stage viewIndividualRecipePage(Stage stage, Recipe recipe) {
+        BorderPane borderPane = new BorderPane();
+        borderPane.setBackground(new Background(new BackgroundFill(Color.web(backgroundColor), new CornerRadii(1), new Insets(1))));
+        VBox recipeInformation = new VBox();
+
+        Label nameAndRating = new Label(recipe.getName() + " (" + recipe.getRating() + ")");
+        Text descriptionAndDifficulty = new Text(recipe.getDescription() + "\nDifficulty: " + recipe.getDifficulty());
+        Label ingredientsAndServings = new Label("Ingredients:");
+
+        Label stepsAndCookTime = new Label("Steps:");
+        Text stepsAndStuff = new Text("Cook Time: " + recipe.getCookTime() + "\n" + recipe.getSteps());
+        recipeInformation.getChildren().addAll(nameAndRating, descriptionAndDifficulty, ingredientsAndServings, stepsAndCookTime);
+
+        return stage;
+    }
+
+
+    /**
+     * Shows the user a table view of all of the recipes that were found via their search
+     *
+     * @param stage current stage information
+     * @param search the item name that is being searched
+     * @return the stage information
+     */
     public Stage searchRecipeByNamePage(Stage stage, String search) {
         BorderPane borderPane = new BorderPane();
         borderPane.setBackground(new Background(new BackgroundFill(Color.web(backgroundColor), new CornerRadii(1), new Insets(1))));
@@ -534,6 +646,13 @@ public class RecipeGUI extends Application {
         return stage;
     }
 
+
+    /**
+     * Shows the user a table view of all of the recipes that were found via ingredient search
+     *
+     * @param stage
+     * @return
+     */
     public Stage searchRecipeByIngredientsPage(Stage stage) {
         BorderPane borderPane = new BorderPane();
         GridPane gridPane = new GridPane();
