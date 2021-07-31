@@ -22,10 +22,11 @@ public class RecipeGUI extends Application {
     private String password;
     private Login user;
     private Label error;
-    private String backgroundColor = "#e8e8e8";
-    private String accentColor1 = "#277582";
-    private String accentColor2 = "#277582";
-    private String textColor = "#e8e8e8";
+    private Label title;
+    private final String backgroundColor = "#e8e8e8";
+    private final String accentColor1 = "#277582";
+    private final String accentColor2 = "#277582";
+    private final String textColor = "#e8e8e8";
 
     public void init() {
         username = null;
@@ -333,11 +334,11 @@ public class RecipeGUI extends Application {
         return stage;
     }
 
-    public Stage searchRecipePage(Stage stage) {
+    public Stage searchRecipeByNamePage(Stage stage) {
         BorderPane borderPane = new BorderPane();
         borderPane.setBackground(new Background(new BackgroundFill(Color.web(backgroundColor), new CornerRadii(1), new Insets(1))));
         GridPane gridPane = new GridPane();
-        Label title = new Label("Please insert recipe name for searching");
+        title = new Label("Please insert recipe name for searching");
         title.setFont(new Font("Ariel", 14));
         borderPane.setTop(title);
         Label name = new Label("Recipe Name");
@@ -366,7 +367,7 @@ public class RecipeGUI extends Application {
     public Stage searchRecipeByCategoryPage(Stage stage) {
         BorderPane borderPane = new BorderPane();
         GridPane gridPane = new GridPane();
-        Label title = new Label("PLease insert category name for searching");
+        title = new Label("PLease insert category name for searching");
         title.setFont(new Font("Ariel", 14));
         borderPane.setTop(title);
         Label name = new Label("Category Name");
@@ -391,7 +392,33 @@ public class RecipeGUI extends Application {
     }
 
     public Stage searchRecipeByIngredientsPage(Stage stage) {
-        return null;
+        BorderPane borderPane = new BorderPane();
+        GridPane gridPane = new GridPane();
+        title = new Label("Recipe(s) available according to your existing ingredient(s)");
+        title.setFont(new Font("Ariel", 14));
+        borderPane.setTop(title);
+        // creating table to hold values
+        TableView<Recipe> recipeTable = new TableView<Recipe>();
+
+        // creating the individual column
+        TableColumn<Recipe, String> recipeNameColumn = new TableColumn<Recipe, String>("Recipe Name");
+        recipeNameColumn.setCellValueFactory(new PropertyValueFactory<Recipe, String>("name"));
+
+        // making the table
+        recipeTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        SearchRecipesByIngredients recipesByIngredients = new SearchRecipesByIngredients(username);
+
+        for (int i = 0; i < recipesByIngredients.getRecipes().size(); i++) {
+            recipeTable.getItems().add(recipesByIngredients.getRecipes().get(i));
+        }
+
+        borderPane.setCenter(gridPane);
+        Scene scene = new Scene(borderPane);
+        stage.setScene(scene);
+        stage.setTitle("Search Recipe By Ingredients");
+        changeStageSize(stage);
+        return stage;
     }
 
     public Stage makeRecipe(Stage stage) {

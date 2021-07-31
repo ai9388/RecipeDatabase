@@ -1,9 +1,13 @@
 package model;
 
+import model.databaseObjects.Ingredient;
+import model.databaseObjects.Recipe;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 public class SearchRecipesByIngredients {
     private final String username;
@@ -12,7 +16,7 @@ public class SearchRecipesByIngredients {
         this.username = username;
     }
 
-    public String getRecipes() {
+    public ArrayList<Recipe> getRecipes() {
         try {
             Class.forName("org.postgresql.Driver");
             Connection db = DriverManager.getConnection("jdbc:postgresql://reddwarf.cs.rit.edu:5432/p32001f", "p32001f", "eeje5EiRoo9atha3ooLo");
@@ -24,17 +28,26 @@ public class SearchRecipesByIngredients {
                     "(SELECT item_id FROM owns WHERE username='" + username + "'))) AS s ON (r.recipe_id = s.recipe_id))";
             ResultSet rs;
             rs = stmt.executeQuery(selectRecipes);
-            StringBuilder recipes = new StringBuilder();
+            ArrayList<Recipe> recipeArrayList = new ArrayList<>();
             while (rs.next()) {
-                recipes.append(rs.getString("recipe_name")).append("\n");
+                String name = rs.getString("recipe_name");
+                String description = rs.getString("description");
+                float servings = rs.getFloat("servings");
+                int cook_time = rs.getInt("cook_time");
+                String difficulty = rs.getString("difficulty");
+                float rating = rs.getFloat("rating");
+                String steps = rs.getString("steps");
+                GetRecipesIngredients search = new GetRecipesIngredients(rs.getInt("recipe_id"));
+                ArrayList<Ingredient> ingredients = search.getIngredients();
+                recipeArrayList.add(new Recipe(name, description, servings, cook_time, difficulty, rating, steps, ingredients));
             }
             db.close();
-            return recipes.toString();
+            return recipeArrayList;
         } catch (Exception e) {
             System.out.println("Error loading postgres driver.");
             e.printStackTrace();
         }
-        return "";
+        return null;
     }
 
     public static void main(String[] args) {
