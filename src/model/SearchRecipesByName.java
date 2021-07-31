@@ -9,13 +9,10 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-/**
- * Title Boi
- */
-public class SearchRecipesByCategory {
+public class SearchRecipesByName {
     private final String search;
 
-    public SearchRecipesByCategory(String search) {
+    public SearchRecipesByName(String search) {
         this.search = search;
     }
 
@@ -24,8 +21,7 @@ public class SearchRecipesByCategory {
             Class.forName("org.postgresql.Driver");
             Connection db = DriverManager.getConnection("jdbc:postgresql://reddwarf.cs.rit.edu:5432/p32001f", "p32001f", "eeje5EiRoo9atha3ooLo");
             Statement stmt = db.createStatement();
-            String selectRecipes = "SELECT * FROM recipe WHERE recipe_id IN " +
-                    "(SELECT recipe_id FROM part_of WHERE category_name='" + search + "')";
+            String selectRecipes = "SELECT recipe_name, description, servings, cook_time, difficulty, rating, steps, recipe_id FROM recipe WHERE recipe_name LIKE '%" + search + "%'";
             ResultSet rs;
             rs = stmt.executeQuery(selectRecipes);
             ArrayList<Recipe> recipes = new ArrayList<>();
@@ -53,7 +49,7 @@ public class SearchRecipesByCategory {
     public static void main(String[] args) {
         System.out.println("Start Recipe Search...");
         if (args.length == 1) {
-            SearchRecipesByCategory search = new SearchRecipesByCategory(args[0]);
+            SearchRecipesByName search = new SearchRecipesByName(args[0]);
             ArrayList<Recipe> recipes = search.getRecipes();
             System.out.print(recipes);
         }

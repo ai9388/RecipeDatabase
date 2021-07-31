@@ -41,7 +41,7 @@ public class SearchRecipesByIngredients {
         System.out.println("Start Recipe Search...");
         if (args.length == 1) {
             SearchRecipesByIngredients search = new SearchRecipesByIngredients(args[0]);
-            String recipes = search.getRecipes();
+            ArrayList<Recipe> recipes = search.getRecipes();
             System.out.print(recipes);
         }
         System.out.println("Search complete.");

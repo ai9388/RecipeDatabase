@@ -189,6 +189,9 @@ public class RecipeGUI extends Application {
     public Stage homePage(Stage stage) {
         BorderPane pane = new BorderPane();
         pane.setMinSize(800, 600);
+        pane.setBackground(new Background(new BackgroundFill(Color.web(backgroundColor), new CornerRadii(1), new Insets(1))));
+
+        ////////////USER INTRO PAGE/////////////////////
         // on the user intro, it should display as
         //          Recipes
         //  Welcome back [username]
@@ -197,18 +200,27 @@ public class RecipeGUI extends Application {
         VBox userIntro = new VBox();
         pane.setTop(userIntro);
         // creating title
-        Label titleLabel = new Label("Recipes");
+        Label titleLabel = new Label("UnderCooked");
+        titleLabel.setTextFill(Color.web(accentColor2));
+        titleLabel.setFont(new Font("Ariel", 18));
+
         // creating welcome statement
         String welcome = "Welcome back " + this.username;
         Label welcomeLabel = new Label(welcome);
+        welcomeLabel.setTextFill(Color.web(accentColor1));
+
         // creating the account creation time and date
         String creationDateAndTime = user.getCreationDate() + " at " + user.getCreationTime();
         String creation = "Account was created on " + creationDateAndTime;
         Label creationLabel = new Label(creation);
+        creationLabel.setTextFill(Color.web(accentColor1));
+
         // creating the last accessed time for the user
         String lastAccessDateAndTime = user.getLastAccessDate() + " at " + user.getLastAccessTime();
         String lastLogIn = "Last Login was on " + lastAccessDateAndTime;
         Label lastLogInLabel = new Label(lastLogIn);
+        lastLogInLabel.setTextFill(Color.web(accentColor1));
+
         // adding everything to the vbox
         userIntro.getChildren().addAll(titleLabel, welcomeLabel, creationLabel, lastLogInLabel);
         userIntro.setAlignment(Pos.CENTER);
@@ -278,7 +290,7 @@ public class RecipeGUI extends Application {
         if (ingredients.getIngredients().equals("")) {
             System.out.println("User has no ingredients");
         } else {
-            String allIngredients = ingredients.getIngredients();
+            ArrayList<Ingredient> allIngredients = ingredients.getIngredients();
             System.out.println(allIngredients);
         }
         Button back = new Button();
@@ -295,16 +307,25 @@ public class RecipeGUI extends Application {
 
     public Stage searchRecipePage(Stage stage) {
         BorderPane borderPane = new BorderPane();
+        borderPane.setBackground(new Background(new BackgroundFill(Color.web(backgroundColor), new CornerRadii(1), new Insets(1))));
         GridPane gridPane = new GridPane();
         Label title = new Label("Please insert recipe name for searching");
         title.setFont(new Font("Ariel", 14));
         borderPane.setTop(title);
         Label name = new Label("Recipe Name");
         name.setFont(new Font("Ariel", 14));
-        TextField recipeName = new TextField();
-        gridPane.addRow(0, name, recipeName);
-        SearchRecipes searchRecipes = new SearchRecipes(recipeName.getText());
-        System.out.println(searchRecipes.getRecipes());
+        TextField searchQuery = new TextField();
+        gridPane.addRow(0, name, searchQuery);
+        Button executeSearch = new Button();
+        executeSearch.setText("Search");
+        executeSearch.setBackground(new Background(new BackgroundFill(Color.web(accentColor1), new CornerRadii(1), new Insets(1))));
+        executeSearch.setTextFill(Color.web(textColor));
+        executeSearch.setOnAction(event -> {
+            SearchRecipesByName searchRecipesByName = new SearchRecipesByName(searchQuery.getText());
+            ArrayList<Recipe> result = searchRecipesByName.getRecipes();
+        });
+        //// ADD TABLE THING HERE
+
         borderPane.setCenter(gridPane);
         Scene scene = new Scene(borderPane);
         stage.setScene(scene);
@@ -324,8 +345,14 @@ public class RecipeGUI extends Application {
         name.setFont(new Font("Ariel", 14));
         TextField categoryName = new TextField();
         gridPane.addRow(0, name, categoryName);
-        SearchRecipesByCategory byCategory = new SearchRecipesByCategory(categoryName.getText());
-        System.out.println(byCategory.getRecipes());
+        Button executeSearch = new Button();
+        executeSearch.setText("Search");
+        executeSearch.setBackground(new Background(new BackgroundFill(Color.web(accentColor1), new CornerRadii(1), new Insets(1))));
+        executeSearch.setTextFill(Color.web(textColor));
+        executeSearch.setOnAction(event -> {
+            SearchRecipesByCategory byCategory = new SearchRecipesByCategory(categoryName.getText());
+            System.out.println(byCategory.getRecipes());
+        });
         borderPane.setCenter(gridPane);
         Scene scene = new Scene(borderPane);
         stage.setScene(scene);
