@@ -235,10 +235,37 @@ public class RecipeGUI extends Application {
         Label lastLogInLabel = new Label(lastLogIn);
         lastLogInLabel.setTextFill(Color.web(accentColor1));
 
+        // search options
+        Label searchLabel = new Label();
+        searchLabel.setText("Search for Recipes:");
+        TextField searchBox = new TextField();
+        Button name = new Button();
+        name.setBackground(new Background(new BackgroundFill(Color.web(accentColor1), new CornerRadii(1), new Insets(1))));
+        name.setTextFill(Color.web(textColor));
+        name.setText("Search by Name");
+        name.setOnAction(event -> {
+            String search = searchBox.getText();
+            searchRecipeByNamePage(stage, search);
+        });
+        Button category = new Button();
+        category.setBackground(new Background(new BackgroundFill(Color.web(accentColor1), new CornerRadii(1), new Insets(1))));
+        category.setTextFill(Color.web(textColor));
+        category.setText("Search by Category");
+        category.setOnAction(event -> {
+            String search = searchBox.getText();
+            searchRecipeByCategoryPage(stage, search);
+        });
+        HBox searchTab = new HBox();
+        searchTab.getChildren().addAll(searchBox, name, category);
+        searchTab.setAlignment(Pos.TOP_RIGHT);
+
         // adding everything to the vbox
         userIntro.getChildren().addAll(titleLabel, welcomeLabel, creationLabel, lastLogInLabel);
         userIntro.setAlignment(Pos.CENTER);
-        pane.setTop(userIntro);
+        FlowPane topPart = new FlowPane();
+        topPart.getChildren().addAll(userIntro, searchTab);
+        topPart.setAlignment(Pos.CENTER);
+        pane.setTop(topPart);
 
         ////////////USER PANTRY PAGE/////////////////////
         // on the user pantry page, it should display as
@@ -273,6 +300,7 @@ public class RecipeGUI extends Application {
             int quantity = Integer.parseInt(quantityToAdd.getText());
             AddIngredients addIngred = new AddIngredients(username, ingredientToAdd.getText(), quantity);
             addIngred.addIngredient();
+            homePage(stage);
         });
         gp.addRow(0, ingredientLabel, ingredientToAdd);
         gp.addRow(1, quantityLabel, quantityToAdd);
@@ -317,13 +345,42 @@ public class RecipeGUI extends Application {
         // creating button for user to create new recipe
         Button createRecipeButton = new Button();
         createRecipeButton.setText("Create new recipe");
-        createRecipeButton.setOnAction(event -> {
-            makeRecipe(stage);
-        });
+
+        // adding to grid pane
+        recipeGridPane.addRow(0, editLabel, recipeToEdit, editRecipeButton);
+        recipeGridPane.addRow(1, deleteLabel, recipeToDelete, deleteRecipeButton);
+        recipeGridPane.addRow(2, createRecipeButton);
+
+        // creating table to hold values
+        TableView<Recipe> userRecipeTable = new TableView<Recipe>();
+
+        // creating the individual column
+        TableColumn<Recipe, String> recipeNameColumn = new TableColumn<Recipe, String>("Recipe Name");
+        recipeNameColumn.setCellValueFactory(new PropertyValueFactory<Recipe, String>("name"));
+
+        // adding the columns to the table
+        userRecipeTable.getColumns().add(recipeNameColumn);
+
+        // making the table look nicer
+        userRecipeTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        // filling in the table
+        SearchRecipesByIngredients recipesByIngredients = new SearchRecipesByIngredients(username);
+
+//        for (int i = 0; i < recipesByIngredients.getRecipes().size(); i++) {
+//            userRecipeTable.getItems().add(recipesByIngredients.getRecipes().get(i));
+//        }
+
+        // adding to the vbox
+        userRecipe.getChildren().addAll(recipeLabel, recipeGridPane, userRecipeTable);
+
+        ////////////USER CATEGORY PAGE/////////////////////
         // showing all the recipes
 
         VBox userCategories = new VBox();
         pane.setRight(userCategories);
+
+
 
         //Add get all ingredients button and direct it to allIngredientsPage. (It is ready to be tested)
         Scene scene = new Scene(pane);
@@ -358,7 +415,7 @@ public class RecipeGUI extends Application {
         return stage;
     }
 
-    public Stage searchRecipeByNamePage(Stage stage) {
+    public Stage searchRecipeByNamePage(Stage stage, String search) {
         BorderPane borderPane = new BorderPane();
         borderPane.setBackground(new Background(new BackgroundFill(Color.web(backgroundColor), new CornerRadii(1), new Insets(1))));
         GridPane gridPane = new GridPane();
@@ -388,7 +445,7 @@ public class RecipeGUI extends Application {
         return stage;
     }
 
-    public Stage searchRecipeByCategoryPage(Stage stage) {
+    public Stage searchRecipeByCategoryPage(Stage stage, String search) {
         BorderPane borderPane = new BorderPane();
         GridPane gridPane = new GridPane();
         title = new Label("PLease insert category name for searching");
