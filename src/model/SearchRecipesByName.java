@@ -21,11 +21,12 @@ public class SearchRecipesByName {
             Class.forName("org.postgresql.Driver");
             Connection db = DriverManager.getConnection("jdbc:postgresql://reddwarf.cs.rit.edu:5432/p32001f", "p32001f", "eeje5EiRoo9atha3ooLo");
             Statement stmt = db.createStatement();
-            String selectRecipes = "SELECT recipe_name, description, servings, cook_time, difficulty, rating, steps, recipe_id FROM recipe WHERE recipe_name LIKE '%" + search + "%'";
+            String selectRecipes = "SELECT * FROM recipe WHERE recipe_name LIKE '%" + search + "%'";
             ResultSet rs;
             rs = stmt.executeQuery(selectRecipes);
             ArrayList<Recipe> recipes = new ArrayList<>();
             while (rs.next()) {
+                int id = rs.getInt("recipe_id");
                 String name = rs.getString("recipe_name");
                 String description = rs.getString("description");
                 float servings = rs.getFloat("servings");
@@ -35,7 +36,7 @@ public class SearchRecipesByName {
                 String steps = rs.getString("steps");
                 GetRecipesIngredients search = new GetRecipesIngredients(rs.getInt("recipe_id"));
                 ArrayList<Ingredient> ingredients = search.getIngredients();
-                recipes.add(new Recipe(name, description, servings, cook_time, difficulty, rating, steps, ingredients));
+                recipes.add(new Recipe(id, name, description, servings, cook_time, difficulty, rating, steps, ingredients));
             }
             db.close();
             return recipes;

@@ -30,6 +30,7 @@ public class SearchRecipesByIngredients {
             rs = stmt.executeQuery(selectRecipes);
             ArrayList<Recipe> recipeArrayList = new ArrayList<>();
             while (rs.next()) {
+                int id = rs.getInt("recipe_id");
                 String name = rs.getString("recipe_name");
                 String description = rs.getString("description");
                 float servings = rs.getFloat("servings");
@@ -39,7 +40,7 @@ public class SearchRecipesByIngredients {
                 String steps = rs.getString("steps");
                 GetRecipesIngredients search = new GetRecipesIngredients(rs.getInt("recipe_id"));
                 ArrayList<Ingredient> ingredients = search.getIngredients();
-                recipeArrayList.add(new Recipe(name, description, servings, cook_time, difficulty, rating, steps, ingredients));
+                recipeArrayList.add(new Recipe(id, name, description, servings, cook_time, difficulty, rating, steps, ingredients));
             }
             db.close();
             return recipeArrayList;

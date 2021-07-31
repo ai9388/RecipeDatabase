@@ -1,6 +1,9 @@
 package gui;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -10,6 +13,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import model.*;
 import model.databaseObjects.*;
 
@@ -410,25 +414,70 @@ public class RecipeGUI extends Application {
     public Stage searchRecipeByNamePage(Stage stage, String search) {
         BorderPane borderPane = new BorderPane();
         borderPane.setBackground(new Background(new BackgroundFill(Color.web(backgroundColor), new CornerRadii(1), new Insets(1))));
-        GridPane gridPane = new GridPane();
-        title = new Label("Please insert recipe name for searching");
+        FlowPane center = new FlowPane();
+        title = new Label("Search results for recipe names including: " + search);
         title.setFont(new Font("Ariel", 14));
         borderPane.setTop(title);
-        Label name = new Label("Recipe Name");
-        name.setFont(new Font("Ariel", 14));
-        TextField searchQuery = new TextField();
-        gridPane.addRow(0, name, searchQuery);
-        Button executeSearch = new Button();
-        executeSearch.setText("Search");
-        executeSearch.setBackground(new Background(new BackgroundFill(Color.web(accentColor1), new CornerRadii(1), new Insets(1))));
-        executeSearch.setTextFill(Color.web(textColor));
-        executeSearch.setOnAction(event -> {
-            SearchRecipesByName searchRecipesByName = new SearchRecipesByName(searchQuery.getText());
-            ArrayList<Recipe> result = searchRecipesByName.getRecipes();
-        });
-        //// ADD TABLE THING HERE
+        Button backToHome = backToHomeButton();
+        FlowPane top = new FlowPane();
+        top.getChildren().addAll(backToHome, title);
+        borderPane.setTop(top);
 
-        borderPane.setCenter(gridPane);
+        // creating search arraylist
+        SearchRecipesByName searchBoi = new SearchRecipesByName(search);
+        ArrayList<Recipe> result = searchBoi.getRecipes();
+
+        // creating table columns
+        TableColumn<Recipe, String> recipeName = new TableColumn<>("Name");
+        recipeName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        TableColumn<Recipe, Float> recipeRating = new TableColumn<>("Rating");
+        recipeRating.setCellValueFactory(new PropertyValueFactory<>("rating"));
+
+        // creating the tableview
+        TableView<Recipe> searchResultsTable = new TableView<>();
+        ObservableList<Recipe> recipeObservableList = FXCollections.observableArrayList();
+        recipeObservableList.addAll(result);
+        searchResultsTable.setItems(recipeObservableList);
+        searchResultsTable.getColumns().addAll(recipeName, recipeRating);
+
+        // add buttons to the table
+        TableColumn<Recipe, Void> buttonCol = new TableColumn<>("See Recipe");
+        Callback<TableColumn<Recipe, Void>, TableCell<Recipe, Void>> cellFactory = new Callback<TableColumn<Recipe, Void>, TableCell<Recipe, Void>>() {
+            @Override
+            public TableCell<Recipe, Void> call(final TableColumn<Recipe, Void> param) {
+                final TableCell<Recipe, Void> cell = new TableCell<Recipe, Void>() {
+
+                    private final Button btn = new Button("Action");
+
+                    {
+                        btn.setOnAction((ActionEvent event) -> {
+                            Recipe recipe = getTableView().getItems().get(getIndex());
+                            viewIndividualRecipePage(stage, recipe);
+                        });
+                    }
+
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(btn);
+                        }
+                    }
+                };
+                return cell;
+            }
+        };
+        buttonCol.setCellFactory(cellFactory);
+        // adding columns
+        searchResultsTable.getColumns().add(buttonCol);
+        searchResultsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        searchResultsTable.setMinSize(650, 500);
+        center.getChildren().add(searchResultsTable);
+        borderPane.setCenter(center);
+
+        // setting the stage
         Scene scene = new Scene(borderPane);
         stage.setScene(scene);
         stage.setTitle("Search Recipe By Name");
@@ -437,6 +486,27 @@ public class RecipeGUI extends Application {
         return stage;
     }
 
+
+    /**
+     * Helper button to return the user to their home page
+     *
+     * @return button that sends the user home
+     */
+    public Button backToHomeButton(){
+        Button backToHome = new Button();
+        backToHome.setText("<-- Return to Home Page");
+        backToHome.setOnAction(e -> homePage(stage));
+        return backToHome;
+    }
+
+
+    /**
+     * Shows the user a table view of all of the recipes that were found via their category search
+     *
+     * @param stage current stage information
+     * @param search the category name that is being searched
+     * @return the stage information
+     */
     public Stage searchRecipeByCategoryPage(Stage stage, String search) {
         BorderPane borderPane = new BorderPane();
         GridPane gridPane = new GridPane();
@@ -498,7 +568,49 @@ public class RecipeGUI extends Application {
         return stage;
     }
 
-    public Stage makeRecipe(Stage stage) {
+
+    /**
+     * User can create a unique recipe that is then inserted into the database
+     *
+     * @param stage current stage information
+     * @return the stage information
+     */
+    public Stage makeRecipePage(Stage stage) {
+        BorderPane borderPane = new BorderPane();
+        GridPane gridPane = new GridPane();
+
+        // creating recipe name
+        Label recipeNameLabel = new Label("Recipe Name:");
+        TextField recipeName = new TextField();
+
+        // creating the description
+        Label descriptionLabel = new Label("Description:");
+        TextField decription = new TextField();
+
+        // creating the servings
+        Label servingsLabel = new Label("Servings:");
+        TextField servings = new TextField();
+
+        // creating the cook time
+        Label cookTimeLabel = new Label("Cook Time:");
+        TextField cookTime = new TextField();
+
+        // creating the steps
+        Label stepsLabel = new Label("Steps:");
+        TextField steps = new TextField();
+        // https://stackoverflow.com/questions/12737829/javafx-textfield-resize-to-text-length
+//        steps.textProperty().addListener(new ChangeListener<String>(){
+//            @Override
+//                    public void changed(ObservableValue)<? extends String> observable, String oldValue, String neeValue
+//        }
+
+        // adding all of the labels and text field to a grid pane
+        gridPane.addRow(0,recipeNameLabel,recipeName);
+        gridPane.addRow(1,descriptionLabel,decription);
+        gridPane.addRow(2,servingsLabel, servings);
+        gridPane.addRow(3,cookTimeLabel,cookTime);
+        gridPane.addRow(4,stepsLabel,steps);
+
         return null;
     }
 

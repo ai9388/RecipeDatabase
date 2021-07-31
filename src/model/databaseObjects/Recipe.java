@@ -7,6 +7,7 @@ import java.util.ArrayList;
  * Class represents a recipe that hold a name, description, servings, cook time, difficulty, rating, steps, and ingredients
  */
 public class Recipe {
+    private int id;
     private String name;
     private String description;
     private float servings;
@@ -16,7 +17,8 @@ public class Recipe {
     private String steps;
     private ArrayList<Ingredient> ingredients;
 
-    public Recipe(String name, String description, float servings, int cookTime, String difficulty, float rating, String steps, ArrayList<Ingredient> ingredients) {
+    public Recipe(int id, String name, String description, float servings, int cookTime, String difficulty, float rating, String steps, ArrayList<Ingredient> ingredients) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.servings = servings;
