@@ -255,11 +255,20 @@ public class RecipeGUI extends Application {
 
         // creating button for user to add an ingredient to their pantry
         GridPane gp = new GridPane();
-        Label ingredientLabel = new Label("Ingredient");
+        Label ingredientLabel = new Label("Ingredient: ");
+        Label quantityLabel = new Label("Quantity: ");
         TextField ingredientToAdd = new TextField();
+        TextField quantityToAdd = new TextField();
         Button addIngredientButton = new Button();
         addIngredientButton.setText("Add");
-        gp.addRow(0, ingredientLabel, ingredientToAdd, addIngredientButton);
+        addIngredientButton.setOnAction(event -> {
+            int quantity = Integer.parseInt(quantityToAdd.getText());
+            AddIngredients addIngred = new AddIngredients(username, ingredientToAdd.getText(), quantity);
+            addIngred.addIngredient();
+        });
+        gp.addRow(0, ingredientLabel, ingredientToAdd);
+        gp.addRow(1, quantityLabel, quantityToAdd);
+        gp.addRow(2, addIngredientButton);
 
         // creating table to hold values
         TableView<Ingredient> table = new TableView<Ingredient>();
@@ -407,9 +416,10 @@ public class RecipeGUI extends Application {
         TableColumn<Recipe, String> recipeNameColumn = new TableColumn<Recipe, String>("Recipe Name");
         recipeNameColumn.setCellValueFactory(new PropertyValueFactory<Recipe, String>("name"));
 
-        // making the table
+        // making the table look nicer
         recipeTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
+        // adding
         SearchRecipesByIngredients recipesByIngredients = new SearchRecipesByIngredients(username);
 
         for (int i = 0; i < recipesByIngredients.getRecipes().size(); i++) {

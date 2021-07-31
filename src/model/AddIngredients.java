@@ -7,13 +7,15 @@ import java.time.format.DateTimeFormatter;
 public class AddIngredients {
     private final String ingredient;
     private final String username;
+    private final int quantity;
 
-    public AddIngredients(String username, String ingredient){
+    public AddIngredients(String username, String ingredient, int quantity){
         this.ingredient = ingredient;
         this.username = username;
+        this.quantity = quantity;
     }
 
-    public boolean addIngredient(){
+    public boolean addIngredient() {
         try {
             //connect to database
             Class.forName("org.postgresql.Driver");
@@ -77,7 +79,7 @@ public class AddIngredients {
         System.out.println("Adding an ingredient");
         if (args.length == 3) {
             System.out.println("Ingredient: " + args[0]);
-            AddIngredients addIngredients = new AddIngredients(args[0], args[1]);
+            AddIngredients addIngredients = new AddIngredients(args[0], args[1], Integer.parseInt(args[2]));
             if (addIngredients.addIngredient()){
                 System.out.println("Ingredient is added");
             }
