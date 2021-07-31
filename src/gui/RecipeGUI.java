@@ -504,17 +504,38 @@ public class RecipeGUI extends Application {
      */
     public Stage viewIndividualRecipePage(Stage stage, Recipe recipe) {
         BorderPane borderPane = new BorderPane();
+        borderPane.setMinSize(800, 600);
+        borderPane.setBackground(new Background(new BackgroundFill(Color.web(backgroundColor), new CornerRadii(1), new Insets(1))));
         borderPane.setBackground(new Background(new BackgroundFill(Color.web(backgroundColor), new CornerRadii(1), new Insets(1))));
         VBox recipeInformation = new VBox();
 
-        Label nameAndRating = new Label(recipe.getName() + " (" + recipe.getRating() + ")");
+        Label nameAndRating = new Label(recipe.getName() + " (Rating: " + recipe.getRating() + ")");
+        nameAndRating.setFont(new Font("Arial", 24));
+        nameAndRating.setTextFill(Color.web(accentColor1));
+
         Text descriptionAndDifficulty = new Text(recipe.getDescription() + "\nDifficulty: " + recipe.getDifficulty());
+        descriptionAndDifficulty.setWrappingWidth(300);
+
         Label ingredientsAndServings = new Label("Ingredients:");
+        ingredientsAndServings.setFont(new Font("Arial", 18));
+        ingredientsAndServings.setTextFill(Color.web(accentColor1));
+
 
         Label stepsAndCookTime = new Label("Steps:");
-        Text stepsAndStuff = new Text("Cook Time: " + recipe.getCookTime() + "\n" + recipe.getSteps());
-        recipeInformation.getChildren().addAll(nameAndRating, descriptionAndDifficulty, ingredientsAndServings, stepsAndCookTime);
+        stepsAndCookTime.setFont(new Font("Arial", 18));
+        stepsAndCookTime.setTextFill(Color.web(accentColor1));
 
+        Text stepsAndStuff = new Text("Cook Time: " + recipe.getCookTime() + " minutes\n" + recipe.getSteps());
+        stepsAndStuff.setWrappingWidth(300);
+        stepsAndStuff.setFont(new Font("Arial", 12));
+
+
+        recipeInformation.getChildren().addAll(nameAndRating, descriptionAndDifficulty, ingredientsAndServings, stepsAndCookTime, stepsAndStuff);
+        borderPane.setCenter(recipeInformation);
+
+        // setting the stage
+        Scene scene = new Scene(borderPane);
+        stage.setScene(scene);
         return stage;
     }
 
@@ -528,6 +549,7 @@ public class RecipeGUI extends Application {
      */
     public Stage searchRecipeByNamePage(Stage stage, String search) {
         BorderPane borderPane = new BorderPane();
+        borderPane.setMinSize(800, 600);
         borderPane.setBackground(new Background(new BackgroundFill(Color.web(backgroundColor), new CornerRadii(1), new Insets(1))));
         FlowPane center = new FlowPane();
         title = new Label("Search results for recipe names including: " + search);
@@ -562,7 +584,7 @@ public class RecipeGUI extends Application {
             public TableCell<Recipe, Void> call(final TableColumn<Recipe, Void> param) {
                 final TableCell<Recipe, Void> cell = new TableCell<Recipe, Void>() {
 
-                    private final Button btn = new Button("Action");
+                    private final Button btn = new Button("Go to recipe ->");
 
                     {
                         btn.setOnAction((ActionEvent event) -> {
