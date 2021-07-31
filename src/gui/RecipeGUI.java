@@ -10,9 +10,11 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.skin.LabelSkin;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import model.*;
@@ -445,6 +447,7 @@ public class RecipeGUI extends Application {
         // creating create button
         Button createRecipeButton = new Button();
         createRecipeButton.setText("Create new recipe");
+        createRecipeButton.setOnAction(e -> makeRecipePage(stage));
 
         // adding to grid pane
         recipeGridPane.addRow(0, editLabel, recipeToEdit, editRecipeButton);
@@ -622,21 +625,19 @@ public class RecipeGUI extends Application {
     public Stage searchRecipeByCategoryPage(Stage stage, String search) {
         BorderPane borderPane = new BorderPane();
         GridPane gridPane = new GridPane();
-        title = new Label("PLease insert category name for searching");
+        title = new Label("Search results for category including: " + search);
         title.setFont(new Font("Ariel", 14));
         borderPane.setTop(title);
-        Label name = new Label("Category Name");
-        name.setFont(new Font("Ariel", 14));
-        TextField categoryName = new TextField();
-        gridPane.addRow(0, name, categoryName);
+        Button backToHome = backToHomeButton();
+        FlowPane top = new FlowPane();
+        top.getChildren().addAll(backToHome, title);
+        borderPane.setTop(top);
+
+        SearchRecipesByCategory recipesByCategory = new SearchRecipesByCategory(search);
+        ArrayList<Recipe> result = recipesByCategory.getRecipes();
+
         Button executeSearch = new Button();
-        executeSearch.setText("Search");
-        executeSearch.setBackground(new Background(new BackgroundFill(Color.web(accentColor1), new CornerRadii(1), new Insets(1))));
-        executeSearch.setTextFill(Color.web(textColor));
-        executeSearch.setOnAction(event -> {
-            SearchRecipesByCategory byCategory = new SearchRecipesByCategory(categoryName.getText());
-            System.out.println(byCategory.getRecipes());
-        });
+
         borderPane.setCenter(gridPane);
         Scene scene = new Scene(borderPane);
         stage.setScene(scene);
