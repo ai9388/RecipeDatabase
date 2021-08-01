@@ -1,11 +1,14 @@
 package model;
 
+import model.databaseObjects.Ingredient;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class MakeRecipe {
@@ -13,14 +16,23 @@ public class MakeRecipe {
     private String description;
     private int servings;
     private int cookTime;
+    private String difficulty;
     private String steps;
+    private ArrayList<Ingredient> ingredients;
 
-    public MakeRecipe(String recipeName, String description, int servings, int cookTime, String steps) {
+    public MakeRecipe(String recipeName, String description, int servings, int cookTime, String difficulty, String steps, ArrayList<Ingredient> ingredients) {
         this.recipeName = recipeName;
         this.description = description;
         this.servings = servings;
         this.cookTime = cookTime;
+        if(difficulty == null) {
+            this.difficulty = getDifficulty(cookTime);
+        }
+        else {
+            this.difficulty = difficulty;
+        }
         this.steps = steps;
+        this.ingredients = ingredients;
     }
 
     public String getDifficulty(int cookTime) {
@@ -62,15 +74,19 @@ public class MakeRecipe {
             String dateAndTime = dtf.format(now);
             dateAndTime = dateAndTime.substring(0, 10) + "', '" + dateAndTime.substring(11, 19);
 
-            //Get difficulty from cookTime
-            String difficulty = getDifficulty(cookTime);
-
             //Insert data into database
             String selectRecipe = "INSERT INTO recipe(recipe_id, recipe_name, description, servings, cook_time, date_made, time_made, difficulty, rating, steps)" +
                     "VALUES (' " + recipeID + "', '" + recipeName + "', '" + description + "', '" + servings + "', '" + cookTime + "', '" + dateAndTime + "', '" + difficulty + "', '" + 0 + "', '" + steps + "');";
-
-//            System.out.println(selectRecipe);
             stmt.executeUpdate(selectRecipe);
+            for(Ingredient ingredient : ingredients) {
+                String getIngredientID = "SELECT item_id FROM item WHERE item_name='" + ingredient.getName() + "'";
+                ResultSet ingredientID = stmt.executeQuery(getIngredientID);
+                if(ingredientID.next()) {
+                    int item_id = ingredientID.getInt("item_id");
+                    String addIngredient = "INSERT INTO made_of(item_id, recipe_id, quantity) VALUES (" + item_id + ", " + recipeID + ", " + ingredient.getQuantity() + ")";
+                    stmt.executeUpdate(addIngredient);
+                }
+            }
             db.close();
             return true;
         } catch (Exception e) {
@@ -89,7 +105,7 @@ public class MakeRecipe {
             System.out.println("Cook Time: " + args[3]);
             System.out.println("Steps: " + args[4]);
         }
-        MakeRecipe newRecipe = new MakeRecipe(args[0], args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]), args[4]);
+        MakeRecipe newRecipe = new MakeRecipe(args[0], args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]), null, args[4], null);
         if (newRecipe.createRecipe()) {
             System.out.println("Recipe is created.");
         }
