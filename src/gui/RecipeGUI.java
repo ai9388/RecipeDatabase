@@ -658,6 +658,12 @@ public class RecipeGUI extends Application {
         recipeInformation.setAlignment(Pos.CENTER);
         borderPane.setCenter(recipeInformation);
 
+        // adding a cancel button which returns to home page
+        Button cancel = new Button();
+        cancel.setText("Back");
+        cancel.setOnAction(e -> homePage(stage));
+        borderPane.setBottom(cancel);
+
         // setting the stage
         Scene scene = new Scene(borderPane);
         stage.setScene(scene);
