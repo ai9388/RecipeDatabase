@@ -46,6 +46,9 @@ public class RecipeGUI extends Application {
     private final String textColor = "#e8e8e8";
 
 
+    /**
+     * initializing username and password to null to get them later on from the user
+     */
     public void init() {
         username = null;
         password = null;
@@ -105,9 +108,7 @@ public class RecipeGUI extends Application {
             signIn.setTextFill(Color.web(textColor));
             signIn.setMinSize(200, 75);
             signIn.setFont(new Font("Arial", 18));
-            signIn.setOnAction(event -> {
-                signInPage(stage);
-            });
+            signIn.setOnAction(event -> signInPage(stage));
 
             // making register button and giving it design
             Button register = new Button();
@@ -116,9 +117,7 @@ public class RecipeGUI extends Application {
             register.setTextFill(Color.web(textColor));
             register.setMinSize(200, 75);
             register.setFont(new Font("Arial", 18));
-            register.setOnAction(event -> {
-                registerPage(stage);
-            });
+            register.setOnAction(event -> registerPage(stage));
 
             // adding both buttons to the page
             signInOptions.getChildren().add(signIn);
@@ -183,9 +182,7 @@ public class RecipeGUI extends Application {
         cancelButton.setPrefSize(60, 15);
         cancelButton.setTextFill(Color.web(textColor));
         cancelButton.setAlignment(Pos.CENTER);
-        cancelButton.setOnAction(event -> {
-            indexPage(stage);
-        });
+        cancelButton.setOnAction(event -> indexPage(stage));
 
         // adding to grid pane
         gridPane.addRow(2, loginButton);
@@ -273,9 +270,7 @@ public class RecipeGUI extends Application {
         // creating cancel cutton and setting its action
         Button cancelButton = new Button();
         cancelButton.setText("Cancel");
-        cancelButton.setOnAction(event -> {
-            indexPage(stage);
-        });
+        cancelButton.setOnAction(event -> indexPage(stage));
 
         // adding to grid pane
         gridPane.addRow(2, registerButton);
@@ -495,8 +490,7 @@ public class RecipeGUI extends Application {
 
         VBox userCategories = new VBox();
         pane.setRight(userCategories);
-
-
+        
 
         //Add get all ingredients button and direct it to allIngredientsPage. (It is ready to be tested)
         Scene scene = new Scene(pane);
@@ -526,24 +520,26 @@ public class RecipeGUI extends Application {
         nameAndRating.setFont(new Font("Arial", 24));
         nameAndRating.setTextFill(Color.web(accentColor1));
 
-        Text descriptionAndDifficulty = new Text(recipe.getDescription() + "\nDifficulty: " + recipe.getDifficulty());
+        Label descriptionLabel = new Label("Description: ");
+        descriptionLabel.setFont(new Font("Arial", 18));
+        descriptionLabel.setTextFill(Color.web(accentColor1));
+        Text descriptionAndDifficulty = new Text(recipe.getDescription() + "\n\nDifficulty: " + recipe.getDifficulty());
         descriptionAndDifficulty.setWrappingWidth(300);
 
         Label ingredientsAndServings = new Label("Ingredients:");
         ingredientsAndServings.setFont(new Font("Arial", 18));
         ingredientsAndServings.setTextFill(Color.web(accentColor1));
 
-
         Label stepsAndCookTime = new Label("Steps:");
         stepsAndCookTime.setFont(new Font("Arial", 18));
         stepsAndCookTime.setTextFill(Color.web(accentColor1));
 
-        Text stepsAndStuff = new Text("Cook Time: " + recipe.getCookTime() + " minutes\n" + recipe.getSteps());
+        Text stepsAndStuff = new Text("Cook Time: " + recipe.getCookTime() + " minutes\n\n" + recipe.getSteps());
         stepsAndStuff.setWrappingWidth(300);
         stepsAndStuff.setFont(new Font("Arial", 12));
 
-
         recipeInformation.getChildren().addAll(nameAndRating, descriptionAndDifficulty, ingredientsAndServings, stepsAndCookTime, stepsAndStuff);
+        recipeInformation.setAlignment(Pos.CENTER);
         borderPane.setCenter(recipeInformation);
 
         // setting the stage
@@ -753,8 +749,14 @@ public class RecipeGUI extends Application {
         gridPane.addRow(3,cookTimeLabel,cookTime);
         gridPane.addRow(4,stepsLabel,steps);
 
-        return null;
+        Scene scene = new Scene(borderPane);
+        stage.setScene(scene);
+        stage.setTitle("New Recipe");
+        changeStageSize(stage);
+        //stage.show();
+        return stage;
     }
+
 
     public static void main(String[] args) {
         if (args.length != 0) {
