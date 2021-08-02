@@ -16,8 +16,12 @@ public class Recipe {
     private float rating;
     private String steps;
     private ArrayList<Ingredient> ingredients;
+    private String date;
+    private String time;
+    private ArrayList<String> categories;
 
-    public Recipe(int id, String name, String description, float servings, int cookTime, String difficulty, float rating, String steps, ArrayList<Ingredient> ingredients) {
+    public Recipe(int id, String name, String description, float servings, int cookTime, String difficulty,
+                  float rating, String steps, ArrayList<Ingredient> ingredients, String date, String time, ArrayList<String> categories) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -27,6 +31,9 @@ public class Recipe {
         this.rating = rating;
         this.steps = steps;
         this.ingredients = ingredients;
+        this.date = date;
+        this.time = time;
+        this.categories = categories;
     }
 
     public String getName() {
@@ -57,12 +64,24 @@ public class Recipe {
         return steps;
     }
 
+    public ArrayList<Ingredient> getIngredients() {
+        return ingredients;
+    }
+
+    public String getDate() {
+        return this.date;
+    }
+
+    public String getTime() {
+        return this.time;
+    }
+
+    public ArrayList<String> getCategories() {
+        return categories;
+    }
+
     @Override
     public String toString() {
         return name;
-    }
-
-    public ArrayList<Ingredient> getIngredients() {
-        return ingredients;
     }
 }

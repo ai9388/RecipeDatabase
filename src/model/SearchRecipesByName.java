@@ -36,7 +36,16 @@ public class SearchRecipesByName {
                 String steps = rs.getString("steps");
                 GetRecipesIngredients search = new GetRecipesIngredients(rs.getInt("recipe_id"));
                 ArrayList<Ingredient> ingredients = search.getIngredients();
-                recipes.add(new Recipe(id, name, description, servings, cook_time, difficulty, rating, steps, ingredients));
+                String date = rs.getString("date_made");
+                String time = rs.getString("time_made");
+                ArrayList<String> categories = new ArrayList<>();
+                String getCategoriesSQL = "SELECT category_name FROM part_of WHERE recipe_id=" + id;
+                Statement getCategories = db.createStatement();
+                ResultSet categoriesFromSQL = getCategories.executeQuery(getCategoriesSQL);
+                while(categoriesFromSQL.next()) {
+                    categories.add(categoriesFromSQL.getString("category_name"));
+                }
+                recipes.add(new Recipe(id, name, description, servings, cook_time, difficulty, rating, steps, ingredients, date, time, categories));
             }
             db.close();
             return recipes;

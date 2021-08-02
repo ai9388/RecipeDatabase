@@ -7,6 +7,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -571,6 +572,8 @@ public class RecipeGUI extends Application {
         editButtonCol.setCellFactory(cellFactory);
         // adding columns
         searchResultsTable.getColumns().add(editButtonCol);
+        searchResultsTable.getColumns().add(deleteButtonCol);
+
         searchResultsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         searchResultsTable.setMinSize(650, 500);
         FlowPane center = new FlowPane();
@@ -602,7 +605,6 @@ public class RecipeGUI extends Application {
         Scene scene = new Scene(pane);
         stage.setScene(scene);
     }
-
 
     /**
      * Displays the user's categories
@@ -644,6 +646,7 @@ public class RecipeGUI extends Application {
         Label ingredientsAndServings = new Label("Ingredients:");
         ingredientsAndServings.setFont(new Font("Arial", 18));
         ingredientsAndServings.setTextFill(Color.web(accentColor1));
+        // TODO make a table view to display all of the ingredients and their quantity
 
         // creating the steps and cook time
         Label stepsAndCookTime = new Label("Steps:");
@@ -977,7 +980,7 @@ public class RecipeGUI extends Application {
             TextField name = new TextField();
             TextField quantity = new TextField();
             ingredient.getChildren().addAll(name, quantity);
-            fields.getChildren().add(size - 2, ingredient);
+            fields.getChildren().add(size - 1, ingredient);
         });
         Button minus = new Button("-");
         minus.setOnAction(event -> {
@@ -990,22 +993,220 @@ public class RecipeGUI extends Application {
         addAndMinus.getChildren().addAll(add, minus);
         fields.getChildren().add(addAndMinus);
 
+        // submitting the recipe button
+        Button submit = new Button("Submit");
+        submit.setOnAction(event -> {
+            String r_recipeName = recipeName.getText();
+            String r_description = description.getText();
+            int r_servings = Integer.parseInt(servings.getText());
+            int r_cookTime = Integer.parseInt(cookTime.getText());
+            String r_difficulty = (String) difficulty.getValue();
+            String r_steps = steps.getText();
+            ArrayList<Ingredient> r_ingredients = new ArrayList<>();
+            int i = 0;
+            for (Node ingredientThing : fields.getChildren()) {
+                if (i == fields.getChildren().size() - 1) {
+                    break;
+                }
+                String name = ((TextField) ((HBox) ingredientThing).getChildren().get(0)).getText();
+                int quantity = Integer.parseInt(((TextField) ((HBox) ingredientThing).getChildren().get(1)).getText());
+                r_ingredients.add(new Ingredient(name, quantity));
+                i++;
+            }
+            MakeRecipe makeIt = new MakeRecipe(r_recipeName, r_description, r_servings, r_cookTime, r_difficulty, r_steps, r_ingredients, username);
+            makeIt.createRecipe();
+            userRecipePage(stage);
+        });
+
         // adding all of the labels and text field to a grid pane
-        gridPane.addRow(0,recipeNameLabel,recipeName);
-        gridPane.addRow(1,descriptionLabel,description);
-        gridPane.addRow(2,servingsLabel, servings);
-        gridPane.addRow(3,cookTimeLabel,cookTime);
+        gridPane.addRow(0, recipeNameLabel, recipeName);
+        gridPane.addRow(1, descriptionLabel, description);
+        gridPane.addRow(2, servingsLabel, servings);
+        gridPane.addRow(3, cookTimeLabel, cookTime);
         gridPane.addRow(4, difficultyLabel, difficulty);
         gridPane.addRow(5, ingredients, fields);
-        gridPane.addRow(6,stepsLabel,steps);
+        gridPane.addRow(6, stepsLabel, steps);
+        gridPane.addRow(7, submit, backToHomeButton());
 
         borderPane.setCenter(gridPane);
-        Scene scene = new Scene(borderPane);
+        ScrollPane scrollPane = new ScrollPane(borderPane);
+        scrollPane.setMinSize(800, 600);
+        Scene scene = new Scene(scrollPane);
         stage.setScene(scene);
         stage.setTitle("New Recipe");
         changeStageSize(stage);
         return stage;
     }
+
+
+    /**
+     * Displays the top 50 most recent recipes
+     *
+     * @param stage current stage information
+     * @return the stage information
+     */
+    public Stage top50MostRecentRecipes(Stage stage) {
+        BorderPane borderPane = new BorderPane();
+        borderPane.setMinSize(800, 600);
+        borderPane.setBackground(new Background(new BackgroundFill(Color.web(backgroundColor), new CornerRadii(1), new Insets(1))));
+        FlowPane center = new FlowPane();
+        title = new Label("Top 50 Most Recent Recipes");
+        title.setFont(new Font("Ariel", 14));
+        borderPane.setTop(title);
+        Button backToHome = backToHomeButton();
+        FlowPane top = new FlowPane();
+        top.getChildren().addAll(backToHome, title);
+        borderPane.setTop(top);
+
+        // creating search arraylist
+        GetMostRecentRecipes searchBoi = new GetMostRecentRecipes(50);
+        ArrayList<Recipe> result = searchBoi.getRecipes();
+
+        // creating table columns
+        TableColumn<Recipe, String> recipeName = new TableColumn<>("Name");
+        recipeName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        TableColumn<Recipe, Float> recipeRating = new TableColumn<>("Rating");
+        recipeRating.setCellValueFactory(new PropertyValueFactory<>("rating"));
+        TableColumn<Recipe, String> recipeDate = new TableColumn<>("Date");
+        recipeDate.setCellValueFactory(new PropertyValueFactory<>("date"));
+
+        // creating the tableview
+        TableView<Recipe> searchResultsTable = new TableView<>();
+        ObservableList<Recipe> recipeObservableList = FXCollections.observableArrayList();
+        recipeObservableList.addAll(result);
+        searchResultsTable.setItems(recipeObservableList);
+        searchResultsTable.getColumns().addAll(recipeName, recipeRating, recipeDate);
+
+        // add buttons to the table
+        TableColumn<Recipe, Void> buttonCol = new TableColumn<>("See Recipe");
+        Callback<TableColumn<Recipe, Void>, TableCell<Recipe, Void>> cellFactory = new Callback<TableColumn<Recipe, Void>, TableCell<Recipe, Void>>() {
+            @Override
+            public TableCell<Recipe, Void> call(final TableColumn<Recipe, Void> param) {
+                final TableCell<Recipe, Void> cell = new TableCell<Recipe, Void>() {
+
+                    private final Button btn = new Button("Go to recipe ->");
+
+                    {
+                        btn.setOnAction((ActionEvent event) -> {
+                            Recipe recipe = getTableView().getItems().get(getIndex());
+                            viewIndividualRecipePage(stage, recipe);
+                        });
+                    }
+
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(btn);
+                        }
+                    }
+                };
+                return cell;
+            }
+        };
+        buttonCol.setCellFactory(cellFactory);
+        // adding columns
+        searchResultsTable.getColumns().add(buttonCol);
+        searchResultsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        searchResultsTable.setMinSize(650, 500);
+        center.getChildren().add(searchResultsTable);
+        borderPane.setCenter(center);
+
+        // setting the stage
+        Scene scene = new Scene(borderPane);
+        stage.setScene(scene);
+        stage.setTitle("Top 50 most recent recipes");
+        changeStageSize(stage);
+        return stage;
+    }
+
+
+    /**
+     * Displays the top 50 rated recipes
+     *
+     * @param stage current stage information
+     * @return the stage information
+     */
+    public Stage top50RatedRecipes(Stage stage) {
+        BorderPane borderPane = new BorderPane();
+        borderPane.setMinSize(800, 600);
+        borderPane.setBackground(new Background(new BackgroundFill(Color.web(backgroundColor), new CornerRadii(1), new Insets(1))));
+        FlowPane center = new FlowPane();
+        title = new Label("Top 50 Most Recent Recipes");
+        title.setFont(new Font("Ariel", 14));
+        borderPane.setTop(title);
+        Button backToHome = backToHomeButton();
+        FlowPane top = new FlowPane();
+        top.getChildren().addAll(backToHome, title);
+        borderPane.setTop(top);
+
+        // creating search arraylist
+        GetHighestRatedRecipes searchBoi = new GetHighestRatedRecipes(50);
+        ArrayList<Recipe> result = searchBoi.getRecipes();
+
+        // creating table columns
+        TableColumn<Recipe, String> recipeName = new TableColumn<>("Name");
+        recipeName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        TableColumn<Recipe, Float> recipeRating = new TableColumn<>("Rating");
+        recipeRating.setCellValueFactory(new PropertyValueFactory<>("rating"));
+        TableColumn<Recipe, String> recipeDate = new TableColumn<>("Date");
+        recipeDate.setCellValueFactory(new PropertyValueFactory<>("date"));
+
+        // creating the tableview
+        TableView<Recipe> searchResultsTable = new TableView<>();
+        ObservableList<Recipe> recipeObservableList = FXCollections.observableArrayList();
+        recipeObservableList.addAll(result);
+        searchResultsTable.setItems(recipeObservableList);
+        searchResultsTable.getColumns().addAll(recipeName, recipeRating, recipeDate);
+
+        // add buttons to the table
+        TableColumn<Recipe, Void> buttonCol = new TableColumn<>("See Recipe");
+        Callback<TableColumn<Recipe, Void>, TableCell<Recipe, Void>> cellFactory = new Callback<TableColumn<Recipe, Void>, TableCell<Recipe, Void>>() {
+            @Override
+            public TableCell<Recipe, Void> call(final TableColumn<Recipe, Void> param) {
+                final TableCell<Recipe, Void> cell = new TableCell<Recipe, Void>() {
+
+                    private final Button btn = new Button("Go to recipe ->");
+
+                    {
+                        btn.setOnAction((ActionEvent event) -> {
+                            Recipe recipe = getTableView().getItems().get(getIndex());
+                            viewIndividualRecipePage(stage, recipe);
+                        });
+                    }
+
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(btn);
+                        }
+                    }
+                };
+                return cell;
+            }
+        };
+
+        buttonCol.setCellFactory(cellFactory);
+        // adding columns
+        searchResultsTable.getColumns().add(buttonCol);
+        searchResultsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        searchResultsTable.setMinSize(650, 500);
+        center.getChildren().add(searchResultsTable);
+        borderPane.setCenter(center);
+
+        // setting the stage
+        Scene scene = new Scene(borderPane);
+        stage.setScene(scene);
+        stage.setTitle("Top 50 highest rated recipes");
+        changeStageSize(stage);
+        return stage;
+    }
+
 
 
     public static void main(String[] args) {
