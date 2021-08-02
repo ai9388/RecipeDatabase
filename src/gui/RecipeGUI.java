@@ -693,7 +693,26 @@ public class RecipeGUI extends Application {
         Label ingredientsAndServings = new Label("Ingredients:");
         ingredientsAndServings.setFont(new Font("Arial", 18));
         ingredientsAndServings.setTextFill(Color.web(accentColor1));
-        // TODO make a table view to display all of the ingredients and their quantity
+
+        // creating the table
+        TableView<Ingredient> recipeIngredients = new TableView<Ingredient>();
+
+        // creating the two columns to hold the ingredient name and quantity
+        TableColumn<Ingredient, String> ingredientNameColumn = new TableColumn<Ingredient, String>("Ingredient Name");
+        ingredientNameColumn.setCellValueFactory(new PropertyValueFactory<Ingredient, String>("name"));
+        TableColumn<Ingredient, Integer> ingredientQuantityColumn = new TableColumn<Ingredient, Integer>("Quantity");
+        ingredientQuantityColumn.setCellValueFactory(new PropertyValueFactory<Ingredient, Integer>("quantity"));
+
+        // adding the columns to the table
+        recipeIngredients.getColumns().addAll(ingredientNameColumn, ingredientQuantityColumn);
+
+        // making the table look nicer
+        recipeIngredients.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        //filling in the table
+        GetRecipesIngredients getRecipesIngredients = new GetRecipesIngredients(recipe.getId());
+
+        recipeIngredients.getItems().addAll(getRecipesIngredients.getIngredients());
 
         // creating the steps and cook time
         Label stepsAndCookTime = new Label("Steps:");
@@ -710,7 +729,7 @@ public class RecipeGUI extends Application {
         Text recipeCategories = new Text(recipe.getCategories().stream().toString().substring(1, recipe.getCategories().size()-1));
 
         // adding everything to the borderpane
-        recipeInformation.getChildren().addAll(nameAndRating, descriptionAndDifficulty, ingredientsAndServings, stepsAndCookTime, stepsAndStuff);
+        recipeInformation.getChildren().addAll(nameAndRating, descriptionAndDifficulty, ingredientsAndServings, recipeIngredients, stepsAndCookTime, stepsAndStuff);
         recipeInformation.setAlignment(Pos.CENTER);
         borderPane.setCenter(recipeInformation);
 
