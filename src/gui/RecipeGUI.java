@@ -1,6 +1,7 @@
 package gui;
 
 // imports
+
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -10,6 +11,11 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.skin.LabelSkin;
 import javafx.scene.layout.*;
@@ -20,17 +26,20 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import model.*;
 import model.databaseObjects.*;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+
+import java.awt.*;
 import java.util.ArrayList;
 
 
 /**
  * @author Team 3: UnderCooked
- *          Nicholas Deary
- *          Benson Yan
- *          Alex Iacob
- *
+ * Nicholas Deary
+ * Benson Yan
+ * Alex Iacob
  * @filename RecipeGUI.java
- *
+ * <p>
  * File runs a javaFx application implementation of recipe database project.
  * File uses model classes to connect to given database and display data accordingly
  */
@@ -69,7 +78,7 @@ public class RecipeGUI extends Application {
      *
      * @return button that sends the user home
      */
-    public Button backToHomeButton(){
+    public Button backToHomeButton() {
         Button backToHome = new Button();
         backToHome.setText("<-- Return to Home Page");
         backToHome.setOnAction(e -> homePage(stage));
@@ -389,7 +398,7 @@ public class RecipeGUI extends Application {
 
         VBox userCategories = new VBox();
         pane.setRight(userCategories);
-        
+
 
         //Add get all ingredients button and direct it to allIngredientsPage. (It is ready to be tested)
         Scene scene = new Scene(pane);
@@ -406,7 +415,7 @@ public class RecipeGUI extends Application {
      *
      * @param stage current stage information
      */
-    public void userPantryPage(Stage stage){
+    public void userPantryPage(Stage stage) {
         ////////////USER PANTRY PAGE/////////////////////
         // on the user pantry page, it should display as
         //          Pantry
@@ -436,7 +445,7 @@ public class RecipeGUI extends Application {
             int quantity = Integer.parseInt(quantityToAdd.getText());
             AddIngredients addIngred = new AddIngredients(username, ingredientToAdd.getText(), quantity);
             addIngred.addIngredient();
-            homePage(stage);
+            userPantryPage(stage);
         });
         pantryGridPane.addRow(0, ingredientLabel, ingredientToAdd);
         pantryGridPane.addRow(1, quantityLabel, quantityToAdd);
@@ -481,7 +490,7 @@ public class RecipeGUI extends Application {
      *
      * @param stage current stage information
      */
-    public void userRecipePage(Stage stage){
+    public void userRecipePage(Stage stage) {
         ////////////USER RECIPE PAGE/////////////////////
         // on the user recipe page, it should display as
         // [Return to home page]
@@ -493,7 +502,6 @@ public class RecipeGUI extends Application {
         pane.setMinSize(800, 600);
         pane.setTop(backToHomeButton());
         pane.setCenter(userRecipe);
-        GridPane recipeGridPane = new GridPane();
         // creating title
         Label recipeLabel = new Label("My Recipes");
 
@@ -520,10 +528,15 @@ public class RecipeGUI extends Application {
         createRecipeButton.setText("Create new recipe");
         createRecipeButton.setOnAction(event -> makeRecipePage(stage));
 
-        // adding to grid pane
-//        recipeGridPane.addRow(0, editLabel, recipeToEdit, editRecipeButton);
-//        recipeGridPane.addRow(1, deleteLabel, recipeToDelete, deleteRecipeButton);
-        recipeGridPane.addRow(0, createRecipeButton);
+        // creating top 50 most recent recipes
+        Button top50Button = new Button();
+        top50Button.setText("View top 50 most recent recipes");
+        top50Button.setOnAction(event -> top50MostRecentRecipes(stage));
+
+        // creating top 50 highest rated recipes
+        Button top50RatedButton = new Button();
+        top50RatedButton.setText("View top 50 highest rated recipes");
+        top50RatedButton.setOnAction(event -> top50RatedRecipes(stage));
 
         // creating search arraylist
         SearchRecipesByUsername searchBoi = new SearchRecipesByUsername(this.username);
@@ -569,7 +582,41 @@ public class RecipeGUI extends Application {
                 return cell;
             }
         };
+
+        TableColumn<Recipe, Void> deleteButtonCol = new TableColumn<>("Delete Recipe");
+        Callback<TableColumn<Recipe, Void>, TableCell<Recipe, Void>> cellFactory2 = new Callback<TableColumn<Recipe, Void>, TableCell<Recipe, Void>>() {
+            @Override
+            public TableCell<Recipe, Void> call(final TableColumn<Recipe, Void> param) {
+                final TableCell<Recipe, Void> cell = new TableCell<Recipe, Void>() {
+
+                    private final Button btn = new Button("Delete");
+
+                    {
+                        btn.setOnAction((ActionEvent event) -> {
+                            Recipe recipe = getTableView().getItems().get(getIndex());
+                            String recipeID = String.valueOf(recipe.getId());
+                            DeleteRecipe deleteRecipe = new DeleteRecipe(recipeID);
+                            deleteRecipe.getRecipe();
+                            userRecipePage(stage);
+                        });
+                    }
+
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(btn);
+                        }
+                    }
+                };
+                return cell;
+            }
+        };
         editButtonCol.setCellFactory(cellFactory);
+        deleteButtonCol.setCellFactory(cellFactory2);
+
         // adding columns
         searchResultsTable.getColumns().add(editButtonCol);
         searchResultsTable.getColumns().add(deleteButtonCol);
@@ -577,29 +624,29 @@ public class RecipeGUI extends Application {
         searchResultsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         searchResultsTable.setMinSize(650, 500);
         FlowPane center = new FlowPane();
-        center.getChildren().addAll(recipeLabel, createRecipeButton, searchResultsTable);
+        center.getChildren().addAll(recipeLabel, createRecipeButton, top50Button, top50RatedButton, searchResultsTable);
         pane.setCenter(center);
         /**
-        // creating table to hold values
-        TableView<Recipe> userRecipeTable = new TableView<Recipe>();
+         // creating table to hold values
+         TableView<Recipe> userRecipeTable = new TableView<Recipe>();
 
-        // creating the individual column
-        TableColumn<Recipe, String> recipeNameColumn = new TableColumn<Recipe, String>("Recipe Name");
-        recipeNameColumn.setCellValueFactory(new PropertyValueFactory<Recipe, String>("name"));
+         // creating the individual column
+         TableColumn<Recipe, String> recipeNameColumn = new TableColumn<Recipe, String>("Recipe Name");
+         recipeNameColumn.setCellValueFactory(new PropertyValueFactory<Recipe, String>("name"));
 
-        // adding the columns to the table
-        userRecipeTable.getColumns().add(recipeNameColumn);
+         // adding the columns to the table
+         userRecipeTable.getColumns().add(recipeNameColumn);
 
-        // making the table look nicer
-        userRecipeTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+         // making the table look nicer
+         userRecipeTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        // filling in the table
-//        SearchRecipesByUsername recipesByUsername = new SearchRecipesByUsername(username);
-//
-//        userRecipeTable.getItems().addAll(recipesByUsername.getRecipes());
+         // filling in the table
+         //        SearchRecipesByUsername recipesByUsername = new SearchRecipesByUsername(username);
+         //
+         //        userRecipeTable.getItems().addAll(recipesByUsername.getRecipes());
 
-        // adding to the vbox
-        userRecipe.getChildren().addAll(recipeLabel, recipeGridPane, userRecipeTable);
+         // adding to the vbox
+         userRecipe.getChildren().addAll(recipeLabel, recipeGridPane, userRecipeTable);
          */
         // setting the stage
         Scene scene = new Scene(pane);
@@ -611,13 +658,13 @@ public class RecipeGUI extends Application {
      *
      * @param stage current stage information
      */
-    public void userCategoryPage(Stage stage){}
+    public void userCategoryPage(Stage stage) {}
 
 
     /**
      * Shows the user an individual recipe
      *
-     * @param stage current stage information
+     * @param stage  current stage information
      * @param recipe the recipe that the user searched for
      * @return the stage information
      */
@@ -656,6 +703,12 @@ public class RecipeGUI extends Application {
         stepsAndStuff.setWrappingWidth(300);
         stepsAndStuff.setFont(new Font("Arial", 12));
 
+        // creating the recipe's categories
+        Label categoryLabel = new Label("Categories: ");
+        categoryLabel.setFont(new Font("Arial", 18));
+        categoryLabel.setTextFill(Color.web(accentColor1));
+        Text recipeCategories = new Text(recipe.getCategories().stream().toString().substring(1, recipe.getCategories().size()-1));
+
         // adding everything to the borderpane
         recipeInformation.getChildren().addAll(nameAndRating, descriptionAndDifficulty, ingredientsAndServings, stepsAndCookTime, stepsAndStuff);
         recipeInformation.setAlignment(Pos.CENTER);
@@ -677,7 +730,7 @@ public class RecipeGUI extends Application {
     /**
      * Shows the user a table view of all of the recipes that were found via their search
      *
-     * @param stage current stage information
+     * @param stage  current stage information
      * @param search the item name that is being searched
      * @return the stage information
      */
@@ -703,13 +756,15 @@ public class RecipeGUI extends Application {
         recipeName.setCellValueFactory(new PropertyValueFactory<>("name"));
         TableColumn<Recipe, Float> recipeRating = new TableColumn<>("Rating");
         recipeRating.setCellValueFactory(new PropertyValueFactory<>("rating"));
+        TableColumn<Recipe, String> recipeDate = new TableColumn<>("Creation Date");
+        recipeDate.setCellValueFactory(new PropertyValueFactory<>("date"));
 
         // creating the tableview
         TableView<Recipe> searchResultsTable = new TableView<>();
         ObservableList<Recipe> recipeObservableList = FXCollections.observableArrayList();
         recipeObservableList.addAll(result);
         searchResultsTable.setItems(recipeObservableList);
-        searchResultsTable.getColumns().addAll(recipeName, recipeRating);
+        searchResultsTable.getColumns().addAll(recipeName, recipeRating, recipeDate);
 
         // add buttons to the table
         TableColumn<Recipe, Void> buttonCol = new TableColumn<>("See Recipe");
@@ -761,7 +816,7 @@ public class RecipeGUI extends Application {
     /**
      * Shows the user a table view of all of the recipes that were found via their category search
      *
-     * @param stage current stage information
+     * @param stage  current stage information
      * @param search the category name that is being searched
      * @return the stage information
      */
@@ -787,13 +842,15 @@ public class RecipeGUI extends Application {
         recipeName.setCellValueFactory(new PropertyValueFactory<>("name"));
         TableColumn<Recipe, Float> recipeRating = new TableColumn<>("Rating");
         recipeRating.setCellValueFactory(new PropertyValueFactory<>("rating"));
+        TableColumn<Recipe, String> recipeDate = new TableColumn<>("Creation Date");
+        recipeDate.setCellValueFactory(new PropertyValueFactory<>("date"));
 
         // creating the tableview
         TableView<Recipe> searchResultsTable = new TableView<>();
         ObservableList<Recipe> recipeObservableList = FXCollections.observableArrayList();
         recipeObservableList.addAll(result);
         searchResultsTable.setItems(recipeObservableList);
-        searchResultsTable.getColumns().addAll(recipeName, recipeRating);
+        searchResultsTable.getColumns().addAll(recipeName, recipeRating, recipeDate);
 
         // add buttons to the table
         TableColumn<Recipe, Void> buttonCol = new TableColumn<>("See Recipe");
@@ -870,13 +927,15 @@ public class RecipeGUI extends Application {
         recipeName.setCellValueFactory(new PropertyValueFactory<>("name"));
         TableColumn<Recipe, Float> recipeRating = new TableColumn<>("Rating");
         recipeRating.setCellValueFactory(new PropertyValueFactory<>("rating"));
+        TableColumn<Recipe, String> recipeDate = new TableColumn<>("Creation Date");
+        recipeDate.setCellValueFactory(new PropertyValueFactory<>("date"));
 
         // creating the tableview
         TableView<Recipe> searchResultsTable = new TableView<>();
         ObservableList<Recipe> recipeObservableList = FXCollections.observableArrayList();
         recipeObservableList.addAll(result);
         searchResultsTable.setItems(recipeObservableList);
-        searchResultsTable.getColumns().addAll(recipeName, recipeRating);
+        searchResultsTable.getColumns().addAll(recipeName, recipeRating, recipeDate);
 
         // add buttons to the table
         TableColumn<Recipe, Void> buttonCol = new TableColumn<>("See Recipe");
@@ -955,9 +1014,17 @@ public class RecipeGUI extends Application {
 
         // creating the difficulty
         Label difficultyLabel = new Label("Difficulty:");
-        String difficulties[] = {"Easy", "Easy-Medium", "Medium", "Medium-Hard", "Hard"};
-        ComboBox difficulty = new ComboBox(FXCollections.observableArrayList(difficulties));
+        String[] difficulties = {"Easy", "Easy-Medium", "Medium", "Medium-Hard", "Hard"};
+        ComboBox difficulty = new ComboBox<>(FXCollections.observableArrayList(difficulties));
         difficulty.getItems().addAll();
+
+        EventHandler<ActionEvent> actionEvent = new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                difficulty.getValue();
+            }
+        };
+        difficulty.setOnAction(actionEvent);
 
         // creating the steps
         Label stepsLabel = new Label("Steps:");
@@ -966,7 +1033,7 @@ public class RecipeGUI extends Application {
         // creating ingredients
         Label ingredients = new Label("Ingredients (Name, Quantity):");
         VBox fields = new VBox();
-        for(int i = 0; i < 5; i++) {
+        for (int i = 0; i < 5; i++) {
             HBox ingredient = new HBox();
             TextField name = new TextField();
             TextField quantity = new TextField();
@@ -985,7 +1052,7 @@ public class RecipeGUI extends Application {
         Button minus = new Button("-");
         minus.setOnAction(event -> {
             int size = fields.getChildren().size();
-            if(size > 2) {
+            if (size > 2) {
                 fields.getChildren().remove(size - 2);
             }
         });

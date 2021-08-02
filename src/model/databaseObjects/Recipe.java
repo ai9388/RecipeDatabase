@@ -36,6 +36,10 @@ public class Recipe {
         this.categories = categories;
     }
 
+    public int getId() {
+        return this.id;
+    }
+
     public String getName() {
         return name;
     }
