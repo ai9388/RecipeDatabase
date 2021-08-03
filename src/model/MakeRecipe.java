@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class MakeRecipe {
+    private int id;
     private final String recipeName;
     private final String description;
     private final int servings;
@@ -35,6 +36,10 @@ public class MakeRecipe {
         this.steps = steps;
         this.ingredients = ingredients;
         this.author = author;
+    }
+
+    public int getID() {
+        return id;
     }
 
     public String getDifficulty(int cookTime) {
@@ -69,6 +74,8 @@ public class MakeRecipe {
                 existedCheck = "SELECT recipe_id FROM recipe WHERE recipe_id='" + recipeID + "'";
                 existedID = stmt.executeQuery(existedCheck);
             }
+
+            this.id = recipeID;
 
             //Record current date and time for the database
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");

@@ -2,6 +2,7 @@ package model;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.Statement;
 
 /**
@@ -19,10 +20,16 @@ public class DeleteRecipe {
             Class.forName("org.postgresql.Driver");
             Connection db = DriverManager.getConnection("jdbc:postgresql://reddwarf.cs.rit.edu:5432/p32001f", "p32001f", "eeje5EiRoo9atha3ooLo");
             Statement stmt = db.createStatement();
-            String deleteRecipe = "DELETE FROM recipe WHERE recipe_id='" + recipeID + "'";
-            stmt.executeUpdate(deleteRecipe);
+            String exits = "SELECT * FROM has_cooked WHERE recipe_id=" + recipeID;
+            ResultSet cookedRecipe = stmt.executeQuery(exits);
+            if(!cookedRecipe.next()) {
+                String deleteRecipe = "DELETE FROM recipe WHERE recipe_id='" + recipeID + "'";
+                stmt.executeUpdate(deleteRecipe);
+                db.close();
+                return true;
+            }
             db.close();
-            return true;
+            return false;
         } catch (Exception e) {
             System.out.println("Error loading postgres driver.");
             e.printStackTrace();

@@ -16,7 +16,7 @@ public class AddRecipeToCategory {
         this.categoryName = categoryName;
     }
 
-    public boolean add() {
+    public boolean addToCategory() {
         try {
             Class.forName("org.postgresql.Driver");
             Connection db = DriverManager.getConnection("jdbc:postgresql://reddwarf.cs.rit.edu:5432/p32001f", "p32001f", "eeje5EiRoo9atha3ooLo");
@@ -39,7 +39,7 @@ public class AddRecipeToCategory {
         System.out.println("category name: " + args[1]);
         if (args.length == 2) {
             AddRecipeToCategory addRecipeToCategory = new AddRecipeToCategory(args[0], args[1]);
-            System.out.println(addRecipeToCategory.add());
+            System.out.println(addRecipeToCategory.addToCategory());
         }
         System.out.println("Addition Complete.");
     }

@@ -202,7 +202,7 @@ public class RecipeGUI extends Application {
         borderPane.setBackground(new Background(new BackgroundFill(Color.web(backgroundColor), new CornerRadii(1), new Insets(1))));
 
         // setting action for login button to log the user in
-        loginButton.setOnAction(event -> {
+        loginButton.setOnAction(e -> {
             this.username = username.getText();
             this.password = password.getText();
             user = new Login(this.username, this.password);
@@ -708,6 +708,7 @@ public class RecipeGUI extends Application {
 
         // making the table look nicer
         recipeIngredients.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        recipeIngredients.setPrefWidth(300);
 
         //filling in the table
         GetRecipesIngredients getRecipesIngredients = new GetRecipesIngredients(recipe.getId());
@@ -726,12 +727,12 @@ public class RecipeGUI extends Application {
         Label categoryLabel = new Label("Categories: ");
         categoryLabel.setFont(new Font("Arial", 18));
         categoryLabel.setTextFill(Color.web(accentColor1));
-        Text recipeCategories = new Text(recipe.getCategories().stream().toString().substring(1, recipe.getCategories().size()-1));
-
-        // adding everything to the borderpane
-        recipeInformation.getChildren().addAll(nameAndRating, descriptionAndDifficulty, ingredientsAndServings, recipeIngredients, stepsAndCookTime, stepsAndStuff);
-        recipeInformation.setAlignment(Pos.CENTER);
-        borderPane.setCenter(recipeInformation);
+        Text recipeCategories;
+        if (recipe.getCategories().isEmpty()) {
+            recipeCategories = new Text("None");
+        } else {
+            recipeCategories = new Text(recipe.getCategories().toString().substring(1, recipe.getCategories().toString().length() - 1));
+        }
 
         // adding a cancel button which returns to home page
         Button cancel = new Button();
@@ -739,8 +740,13 @@ public class RecipeGUI extends Application {
         cancel.setOnAction(e -> homePage(stage));
         borderPane.setBottom(cancel);
 
+        // creating the scroll pane
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setContent(borderPane);
+        scrollPane.setMinSize(800, 600);
+
         // setting the stage
-        Scene scene = new Scene(borderPane);
+        Scene scene = new Scene(scrollPane);
         stage.setScene(scene);
         return stage;
     }
@@ -1079,6 +1085,31 @@ public class RecipeGUI extends Application {
         addAndMinus.getChildren().addAll(add, minus);
         fields.getChildren().add(addAndMinus);
 
+        // add it to categories
+        Label categories = new Label("Categories:");
+        VBox catibois = new VBox();
+        for (int i = 0; i < 1; i++) {
+            TextField category = new TextField();
+            catibois.getChildren().add(category);
+        }
+        Button add_cat = new Button("+");
+        add_cat.setOnAction(event -> {
+            int size = catibois.getChildren().size();
+            TextField category = new TextField();
+            catibois.getChildren().add(size - 1, category);
+        });
+        Button minus_cat = new Button("-");
+        minus_cat.setOnAction(event -> {
+            int size = catibois.getChildren().size();
+            if (size > 1) {
+                catibois.getChildren().remove(size - 2);
+            }
+        });
+        HBox addAndMinus_cat = new HBox();
+        addAndMinus_cat.getChildren().addAll(add_cat, minus_cat);
+        catibois.getChildren().add(addAndMinus_cat);
+
+
         // submitting the recipe button
         Button submit = new Button("Submit");
         submit.setOnAction(event -> {
@@ -1086,7 +1117,7 @@ public class RecipeGUI extends Application {
             String r_description = description.getText();
             int r_servings = Integer.parseInt(servings.getText());
             int r_cookTime = Integer.parseInt(cookTime.getText());
-            String r_difficulty = (String) difficulty.getValue();
+            String r_difficulty = (String) difficulties.getValue();
             String r_steps = steps.getText();
             ArrayList<Ingredient> r_ingredients = new ArrayList<>();
             int i = 0;
@@ -1101,6 +1132,15 @@ public class RecipeGUI extends Application {
             }
             MakeRecipe makeIt = new MakeRecipe(r_recipeName, r_description, r_servings, r_cookTime, r_difficulty, r_steps, r_ingredients, username);
             makeIt.createRecipe();
+            i = 0;
+            for (Node categoryItem : catibois.getChildren()) {
+                if (i == catibois.getChildren().size() - 1) {
+                    break;
+                }
+                AddRecipeToCategory addition = new AddRecipeToCategory(String.valueOf(makeIt.getID()), ((TextField) categoryItem).getText());
+                addition.addToCategory();
+                i++;
+            }
             userRecipePage(stage);
         });
 
@@ -1109,10 +1149,11 @@ public class RecipeGUI extends Application {
         gridPane.addRow(1, descriptionLabel, description);
         gridPane.addRow(2, servingsLabel, servings);
         gridPane.addRow(3, cookTimeLabel, cookTime);
-        gridPane.addRow(4, difficultyLabel, difficulty);
+        gridPane.addRow(4, difficultyLabel, difficulties);
         gridPane.addRow(5, ingredients, fields);
         gridPane.addRow(6, stepsLabel, steps);
-        gridPane.addRow(7, submit, backToHomeButton());
+        gridPane.addRow(7, categories, catibois);
+        gridPane.addRow(8, submit, backToHomeButton());
 
         borderPane.setCenter(gridPane);
         ScrollPane scrollPane = new ScrollPane(borderPane);
