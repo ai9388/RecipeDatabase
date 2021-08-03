@@ -1480,8 +1480,12 @@ public class RecipeGUI extends Application {
         // creating the description
         Label descriptionLabel = new Label("Description:");
         TextArea description = new TextArea();
-        Button SubmitEditRecipeDescriptionButton = new Button();
-        EditRecipeDescription editRecipeDescription = new EditRecipeDescription(recipe.getId(), description.getText());
+        Button SubmitEditRecipeDescriptionButton = new Button("Edit Description");
+        SubmitEditRecipeDescriptionButton.setOnAction(event -> {
+            EditRecipeDescription editRecipeDescription = new EditRecipeDescription(recipe.getId(), description.getText());
+            editRecipeDescription.editDescription();
+            editRecipePage(stage, recipe);
+        });
 
         // creating the servings
         Label servingsLabel = new Label("Servings:");
@@ -1496,8 +1500,12 @@ public class RecipeGUI extends Application {
         // creating the cook time
         Label cookTimeLabel = new Label("Cook Time:");
         TextField cookTime = new TextField();
-        Button SubmitEditRecipeCookTimeButton = new Button();
-        EditRecipeCookTime editRecipeCookTime = new EditRecipeCookTime(recipe.getId(), Integer.parseInt(cookTime.getText()));
+        Button SubmitEditRecipeCookTimeButton = new Button("Edit Cook Time");
+        SubmitEditRecipeCookTimeButton.setOnAction(event -> {
+            EditRecipeCookTime editRecipeCookTime = new EditRecipeCookTime(recipe.getId(), Integer.parseInt(cookTime.getText()));
+            editRecipeCookTime.editCookTime();
+            editRecipePage(stage, recipe);
+        });
 
         // creating the dropdown menu for the categories
         Label difficultyLabel = new Label("Difficulty:");
