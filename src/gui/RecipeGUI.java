@@ -35,11 +35,10 @@ import java.util.ArrayList;
 
 /**
  * @author Team 3: UnderCooked
- *          Nicholas Deary
- *          Benson Yan
- *          Alex Iacob
- *          Alex Lawrence
- *
+ * Nicholas Deary
+ * Benson Yan
+ * Alex Iacob
+ * Alex Lawrence
  * @filename RecipeGUI.java
  * <p>
  * File runs a javaFx application implementation of recipe database project.
@@ -1472,7 +1471,7 @@ public class RecipeGUI extends Application {
     /**
      * Allows the user to edit an existing recipe that belongs to them
      *
-     * @param stage current stage information
+     * @param stage  current stage information
      * @param recipe the recipe being edited
      * @return the stage information
      */
@@ -1649,7 +1648,7 @@ public class RecipeGUI extends Application {
 
         // adding all of the labels and text field to a grid pane
         gridPane.addRow(0, recipeNameLabel);
-        gridPane.addRow(1,new Text(recipe.getName()));
+        gridPane.addRow(1, new Text(recipe.getName()));
         gridPane.addRow(2, recipeName, SubmitEditRecipeNameButton);
 
         gridPane.addRow(3, descriptionLabel);
@@ -1658,10 +1657,10 @@ public class RecipeGUI extends Application {
 
         gridPane.addRow(6, servingsLabel);
         gridPane.addRow(7, new Text(String.valueOf(recipe.getServings())));
-        gridPane.addRow(8,servings, SubmitEditRecipeServingsButton);
+        gridPane.addRow(8, servings, SubmitEditRecipeServingsButton);
 
         gridPane.addRow(9, cookTimeLabel);
-        gridPane.addRow(10,new Text(String.valueOf(recipe.getCookTime())));
+        gridPane.addRow(10, new Text(String.valueOf(recipe.getCookTime())));
         gridPane.addRow(11, cookTime, SubmitEditRecipeCookTimeButton);
 
         gridPane.addRow(12, difficultyLabel);
@@ -1669,7 +1668,7 @@ public class RecipeGUI extends Application {
         gridPane.addRow(14, difficulties, SubmitEditRecipeDifficultyButton);
 
         gridPane.addRow(15, ingredients);
-        gridPane.addRow(16,fields);
+        gridPane.addRow(16, fields);
         gridPane.addRow(17, SubmitEditRecipeIngredientButton);
 
         gridPane.addRow(18, stepsLabel);
