@@ -568,7 +568,7 @@ public class RecipeGUI extends Application {
                     {
                         btn.setOnAction((ActionEvent event) -> {
                             Recipe recipe = getTableView().getItems().get(getIndex());
-                            viewIndividualRecipePage(stage, recipe);
+                            editRecipePage(stage, recipe);
                         });
                     }
 
@@ -1470,8 +1470,12 @@ public class RecipeGUI extends Application {
         // creating recipe name
         Label recipeNameLabel = new Label("Recipe Name:");
         TextField recipeName = new TextField();
-        Button SubmitEditRecipeNameButton = new Button();
-        EditRecipeName editRecipeName = new EditRecipeName(recipe.getId(), recipeName.getText());
+        Button SubmitEditRecipeNameButton = new Button("Edit Name");
+        SubmitEditRecipeNameButton.setOnAction(event -> {
+            EditRecipeName editRecipeName = new EditRecipeName(recipe.getId(), recipeName.getText());
+            editRecipeName.editRecipeName();
+            editRecipePage(stage, recipe);
+        });
 
         // creating the description
         Label descriptionLabel = new Label("Description:");
@@ -1482,8 +1486,12 @@ public class RecipeGUI extends Application {
         // creating the servings
         Label servingsLabel = new Label("Servings:");
         TextField servings = new TextField();
-        Button SubmitEditRecipeServingsButton = new Button();
-        EditRecipeServings editRecipeServings = new EditRecipeServings(recipe.getId(), Integer.parseInt(servings.getText()));
+        Button SubmitEditRecipeServingsButton = new Button("Edit Servings");
+        SubmitEditRecipeServingsButton.setOnAction(event -> {
+            EditRecipeServings editRecipeServings = new EditRecipeServings(recipe.getId(), Integer.parseInt(servings.getText()));
+            editRecipeServings.editRecipeServings();
+            editRecipePage(stage, recipe);
+        });
 
         // creating the cook time
         Label cookTimeLabel = new Label("Cook Time:");
@@ -1515,6 +1523,12 @@ public class RecipeGUI extends Application {
         // creating the steps
         Label stepsLabel = new Label("Steps:");
         TextArea steps = new TextArea();
+        Button SubmitEditRecipeStepsButton = new Button("Edit Steps");
+        SubmitEditRecipeStepsButton.setOnAction(event -> {
+            EditRecipeSteps editRecipeSteps = new EditRecipeSteps(recipe.getId(), steps.getText());
+            editRecipeSteps.editRecipeSteps();
+            editRecipePage(stage, recipe);
+        });
 
         // creating ingredients
         Label ingredients = new Label("Ingredients (Name, Quantity):");
