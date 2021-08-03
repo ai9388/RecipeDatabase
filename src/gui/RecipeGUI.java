@@ -825,6 +825,7 @@ public class RecipeGUI extends Application {
         Button cookButton = new Button("Cook Recipe");
 
         cookPane.getChildren().addAll(cookLabel, quantityTextField, cookButton);
+        GridPane ratingGridPane = new GridPane();
 
         cookButton.setOnAction(event -> {
             float quantity = Float.parseFloat(quantityTextField.getText());
@@ -844,12 +845,26 @@ public class RecipeGUI extends Application {
                     cookPane.getChildren().remove(3);
                 }
                 cookPane.getChildren().add(validCook);
+
+                // leaving the rating
+                Label ratingLabel = new Label("Leave a rating (0 - 5): ");
+                TextField ratingTextField = new TextField();
+                Button ratingButton = new Button("Rate");
+
+                ratingButton.setOnAction(e -> {
+                    int ratingInteger = Integer.parseInt(ratingTextField.getText());
+                    AddRecipeRating rating = new AddRecipeRating(recipe.getId(), ratingInteger);
+                    rating.rateRecipe();
+                    viewIndividualRecipePage(stage, recipe);
+                });
+                // adding to the grid pane
+                ratingGridPane.addRow(0, ratingLabel, ratingTextField, ratingButton);
             }
         });
 
         // adding everything to the borderpane
         recipeInformation.getChildren().addAll(nameAndRating, descriptionAndDifficulty, ingredientsAndServings,
-                recipeIngredients, stepsAndCookTime, stepsAndStuff, categoryLabel, recipeCategories, cookPane);
+                recipeIngredients, stepsAndCookTime, stepsAndStuff, categoryLabel, recipeCategories, cookPane, ratingGridPane);
         recipeInformation.setAlignment(Pos.CENTER);
         borderPane.setCenter(recipeInformation);
 
@@ -1676,6 +1691,7 @@ public class RecipeGUI extends Application {
         changeStageSize(stage);
         return stage;
     }
+
 
     public static void main(String[] args) {
         if (args.length != 0) {
