@@ -35,9 +35,11 @@ import java.util.ArrayList;
 
 /**
  * @author Team 3: UnderCooked
- * Nicholas Deary
- * Benson Yan
- * Alex Iacob
+ *          Nicholas Deary
+ *          Benson Yan
+ *          Alex Iacob
+ *          Alex Lawrence
+ *
  * @filename RecipeGUI.java
  * <p>
  * File runs a javaFx application implementation of recipe database project.
@@ -208,11 +210,6 @@ public class RecipeGUI extends Application {
             user = new Login(this.username, this.password);
             boolean isValidLogin = user.validLogin();
             if (!isValidLogin) {
-//                username.clear();
-//                password.clear();
-//                error = new Label("This username is not recognized.");
-//                error.setTextFill(Color.RED);
-//                gridPane.addRow(4,error);
                 signInPage(stage);
             } else {
                 homePage(stage);
@@ -388,17 +385,6 @@ public class RecipeGUI extends Application {
                 goToUserPantryPage, goToUserRecipePage, goToUserCategoryPage, searchTab);
         userIntro.setAlignment(Pos.CENTER);
         pane.setTop(userIntro);
-//        FlowPane topPart = new FlowPane();
-//        topPart.getChildren().addAll(userIntro, searchTab);
-//        topPart.setAlignment(Pos.CENTER);
-//        pane.setTop(topPart);
-
-        ////////////USER CATEGORY PAGE/////////////////////
-        // showing all the recipes
-
-        VBox userCategories = new VBox();
-        pane.setRight(userCategories);
-
 
         //Add get all ingredients button and direct it to allIngredientsPage. (It is ready to be tested)
         Scene scene = new Scene(pane);
@@ -505,24 +491,6 @@ public class RecipeGUI extends Application {
         // creating title
         Label recipeLabel = new Label("My Recipes");
 
-//        // creating edit button
-//        Label editLabel = new Label("Edit a recipe: ");
-//        TextField recipeToEdit = new TextField();
-//        Button editRecipeButton = new Button();
-//        editRecipeButton.setText("Edit");
-////        editRecipeButton.setOnAction(event -> {
-////            editRecipe(stage);
-////        });
-//
-//        // creating delete button
-//        Label deleteLabel = new Label("Delete a recipe: ");
-//        TextField recipeToDelete = new TextField();
-//        Button deleteRecipeButton = new Button();
-//        deleteRecipeButton.setText("Delete");
-////        deleteRecipeButton.setOnAction(event -> {
-////            deleteRecipe(stage);
-////        });
-
         // creating create button
         Button createRecipeButton = new Button();
         createRecipeButton.setText("Create new recipe");
@@ -554,8 +522,37 @@ public class RecipeGUI extends Application {
         searchResultsTable.getColumns().addAll(recipeName);
 
         // add buttons to the table
+        TableColumn<Recipe, Void> viewButtonCol = new TableColumn<>("View Recipe");
+        Callback<TableColumn<Recipe, Void>, TableCell<Recipe, Void>> cellFactory1 = new Callback<TableColumn<Recipe, Void>, TableCell<Recipe, Void>>() {
+            @Override
+            public TableCell<Recipe, Void> call(final TableColumn<Recipe, Void> param) {
+                final TableCell<Recipe, Void> cell = new TableCell<Recipe, Void>() {
+
+                    private final Button btn = new Button("View Recipe -->");
+
+                    {
+                        btn.setOnAction((ActionEvent event) -> {
+                            Recipe recipe = getTableView().getItems().get(getIndex());
+                            viewIndividualRecipePage(stage, recipe);
+                        });
+                    }
+
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(btn);
+                        }
+                    }
+                };
+                return cell;
+            }
+        };
+
         TableColumn<Recipe, Void> editButtonCol = new TableColumn<>("Edit Recipe");
-        Callback<TableColumn<Recipe, Void>, TableCell<Recipe, Void>> cellFactory = new Callback<TableColumn<Recipe, Void>, TableCell<Recipe, Void>>() {
+        Callback<TableColumn<Recipe, Void>, TableCell<Recipe, Void>> cellFactory2 = new Callback<TableColumn<Recipe, Void>, TableCell<Recipe, Void>>() {
             @Override
             public TableCell<Recipe, Void> call(final TableColumn<Recipe, Void> param) {
                 final TableCell<Recipe, Void> cell = new TableCell<Recipe, Void>() {
@@ -584,7 +581,7 @@ public class RecipeGUI extends Application {
         };
 
         TableColumn<Recipe, Void> deleteButtonCol = new TableColumn<>("Delete Recipe");
-        Callback<TableColumn<Recipe, Void>, TableCell<Recipe, Void>> cellFactory2 = new Callback<TableColumn<Recipe, Void>, TableCell<Recipe, Void>>() {
+        Callback<TableColumn<Recipe, Void>, TableCell<Recipe, Void>> cellFactory3 = new Callback<TableColumn<Recipe, Void>, TableCell<Recipe, Void>>() {
             @Override
             public TableCell<Recipe, Void> call(final TableColumn<Recipe, Void> param) {
                 final TableCell<Recipe, Void> cell = new TableCell<Recipe, Void>() {
@@ -614,51 +611,130 @@ public class RecipeGUI extends Application {
                 return cell;
             }
         };
-        editButtonCol.setCellFactory(cellFactory);
-        deleteButtonCol.setCellFactory(cellFactory2);
+        viewButtonCol.setCellFactory(cellFactory1);
+        editButtonCol.setCellFactory(cellFactory2);
+        deleteButtonCol.setCellFactory(cellFactory3);
 
         // adding columns
-        searchResultsTable.getColumns().add(editButtonCol);
-        searchResultsTable.getColumns().add(deleteButtonCol);
+        searchResultsTable.getColumns().addAll(viewButtonCol, editButtonCol, deleteButtonCol);
 
         searchResultsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         searchResultsTable.setMinSize(650, 500);
         FlowPane center = new FlowPane();
         center.getChildren().addAll(recipeLabel, createRecipeButton, top50Button, top50RatedButton, searchResultsTable);
         pane.setCenter(center);
-        /**
-         // creating table to hold values
-         TableView<Recipe> userRecipeTable = new TableView<Recipe>();
-
-         // creating the individual column
-         TableColumn<Recipe, String> recipeNameColumn = new TableColumn<Recipe, String>("Recipe Name");
-         recipeNameColumn.setCellValueFactory(new PropertyValueFactory<Recipe, String>("name"));
-
-         // adding the columns to the table
-         userRecipeTable.getColumns().add(recipeNameColumn);
-
-         // making the table look nicer
-         userRecipeTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-
-         // filling in the table
-         //        SearchRecipesByUsername recipesByUsername = new SearchRecipesByUsername(username);
-         //
-         //        userRecipeTable.getItems().addAll(recipesByUsername.getRecipes());
-
-         // adding to the vbox
-         userRecipe.getChildren().addAll(recipeLabel, recipeGridPane, userRecipeTable);
-         */
         // setting the stage
         Scene scene = new Scene(pane);
         stage.setScene(scene);
     }
+
 
     /**
      * Displays the user's categories
      *
      * @param stage current stage information
      */
-    public void userCategoryPage(Stage stage) {}
+    public void userCategoryPage(Stage stage) {
+        ////////////USER CATEGORY PAGE/////////////////////
+        // on the user category page, it should display as
+        // [Return to home page]
+        //        My Categories
+        //      [create category button]
+        //      [category dropdown of all of the categories]
+        //  [table view of the selected category]
+        VBox userCategory = new VBox();
+        BorderPane pane = new BorderPane();
+        pane.setMinSize(800, 600);
+        FlowPane top = new FlowPane();
+        top.getChildren().add(backToHomeButton());
+        pane.setCenter(userCategory);
+        // creating title
+        Label recipeLabel = new Label("Categories");
+        recipeLabel.setAlignment(Pos.CENTER);
+        top.getChildren().add(recipeLabel);
+        pane.setTop(top);
+
+        // creating create button
+        Button createCategoryButton = new Button();
+        createCategoryButton.setText("Create new category");
+        TextField newCategoryName = new TextField();
+        createCategoryButton.setOnAction(event -> {
+            MakeCategory category = new MakeCategory(newCategoryName.getText());
+            category.createCategory();
+            userCategoryPage(stage);
+        });
+
+        // creating the dropdown menu for the categories
+        GetCategories getEveryCategory = new GetCategories();
+        ArrayList<String> everyCategory = getEveryCategory.getCategories();
+
+        ComboBox categoriesComboBox = new ComboBox<String>(FXCollections.observableArrayList(everyCategory));
+        categoriesComboBox.getItems().addAll();
+
+        // creating table columns
+        TableColumn<Recipe, String> recipeName = new TableColumn<>("Recipe Name");
+        recipeName.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+        // creating the tableview
+        TableView<Recipe> searchResultsTable = new TableView<>();
+
+        EventHandler<ActionEvent> actionEvent = new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                String catiboi = (String) categoriesComboBox.getValue();
+                SearchRecipesByCategory search = new SearchRecipesByCategory(catiboi);
+                ArrayList<Recipe> result = search.getRecipes();
+                ObservableList<Recipe> recipeObservableList = FXCollections.observableArrayList();
+                recipeObservableList.addAll(result);
+                searchResultsTable.setItems(recipeObservableList);
+                searchResultsTable.getColumns().add(recipeName);
+            }
+        };
+        categoriesComboBox.setOnAction(actionEvent);
+
+        // add buttons to the table
+        TableColumn<Recipe, Void> viewButtonCol = new TableColumn<>("View Recipe");
+        Callback<TableColumn<Recipe, Void>, TableCell<Recipe, Void>> cellFactory = new Callback<TableColumn<Recipe, Void>, TableCell<Recipe, Void>>() {
+            @Override
+            public TableCell<Recipe, Void> call(final TableColumn<Recipe, Void> param) {
+                final TableCell<Recipe, Void> cell = new TableCell<Recipe, Void>() {
+
+                    private final Button btn = new Button("View Recipe -->");
+
+                    {
+                        btn.setOnAction((ActionEvent event) -> {
+                            Recipe recipe = getTableView().getItems().get(getIndex());
+                            viewIndividualRecipePage(stage, recipe);
+                        });
+                    }
+
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(btn);
+                        }
+                    }
+                };
+                return cell;
+            }
+        };
+        viewButtonCol.setCellFactory(cellFactory);
+
+        // adding columns
+        searchResultsTable.getColumns().add(viewButtonCol);
+
+        searchResultsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        searchResultsTable.setMinSize(650, 500);
+        FlowPane center = new FlowPane();
+        center.getChildren().addAll(recipeLabel, newCategoryName, createCategoryButton, categoriesComboBox, searchResultsTable);
+        pane.setCenter(center);
+        // setting the stage
+        Scene scene = new Scene(pane);
+        stage.setScene(scene);
+    }
 
 
     /**
@@ -696,6 +772,8 @@ public class RecipeGUI extends Application {
 
         // creating the table
         TableView<Ingredient> recipeIngredients = new TableView<Ingredient>();
+        recipeIngredients.setMinSize(300, 350);
+        recipeIngredients.setPrefWidth(300);
 
         // creating the two columns to hold the ingredient name and quantity
         TableColumn<Ingredient, String> ingredientNameColumn = new TableColumn<Ingredient, String>("Ingredient Name");
@@ -733,6 +811,41 @@ public class RecipeGUI extends Application {
         } else {
             recipeCategories = new Text(recipe.getCategories().toString().substring(1, recipe.getCategories().toString().length() - 1));
         }
+
+        // cooking the recipe
+        FlowPane cookPane = new FlowPane();
+        Label cookLabel = new Label("Quantity: ");
+        TextField quantityTextField = new TextField();
+        Button cookButton = new Button("Cook Recipe");
+
+        cookPane.getChildren().addAll(cookLabel, quantityTextField, cookButton);
+
+        cookButton.setOnAction(event -> {
+            float quantity = Float.parseFloat(quantityTextField.getText());
+            CookRecipe cookRecipe = new CookRecipe(this.username, recipe.getId(), quantity);
+            boolean cook = cookRecipe.cook();
+            if (!cook) {
+                Label notEnoughIngredients = new Label("You do not have enough ingredients to cook this recipe " + quantity + " times");
+                notEnoughIngredients.setTextFill(Color.RED);
+                if (cookPane.getChildren().size() > 3) {
+                    cookPane.getChildren().remove(3);
+                }
+                cookPane.getChildren().add(notEnoughIngredients);
+            } else {
+                Label validCook = new Label(recipe.getName() + " was cooked " + quantity + " times");
+                validCook.setTextFill(Color.GREEN);
+                if (cookPane.getChildren().size() > 3) {
+                    cookPane.getChildren().remove(3);
+                }
+                cookPane.getChildren().add(validCook);
+            }
+        });
+
+        // adding everything to the borderpane
+        recipeInformation.getChildren().addAll(nameAndRating, descriptionAndDifficulty, ingredientsAndServings,
+                recipeIngredients, stepsAndCookTime, stepsAndStuff, categoryLabel, recipeCategories, cookPane);
+        recipeInformation.setAlignment(Pos.CENTER);
+        borderPane.setCenter(recipeInformation);
 
         // adding a cancel button which returns to home page
         Button cancel = new Button();
@@ -1037,19 +1150,19 @@ public class RecipeGUI extends Application {
         Label cookTimeLabel = new Label("Cook Time:");
         TextField cookTime = new TextField();
 
-        // creating the difficulty
+        // creating the dropdown menu for the categories
         Label difficultyLabel = new Label("Difficulty:");
-        String[] difficulties = {"Easy", "Easy-Medium", "Medium", "Medium-Hard", "Hard"};
-        ComboBox difficulty = new ComboBox<>(FXCollections.observableArrayList(difficulties));
-        difficulty.getItems().addAll();
+        String[] difficulty = {"Easy", "Easy-Medium", "Medium", "Medium-Hard", "Hard"};
+        ComboBox difficulties = new ComboBox<String>(FXCollections.observableArrayList(difficulty));
+        difficulties.getItems().addAll();
 
         EventHandler<ActionEvent> actionEvent = new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                difficulty.getValue();
+                difficulties.getValue();
             }
         };
-        difficulty.setOnAction(actionEvent);
+        difficulties.setOnAction(actionEvent);
 
         // creating the steps
         Label stepsLabel = new Label("Steps:");
@@ -1335,6 +1448,204 @@ public class RecipeGUI extends Application {
     }
 
 
+    /**
+     * Allows the user to edit an existing recipe that belongs to them
+     *
+     * @param stage current stage information
+     * @param recipe the recipe being edited
+     * @return the stage information
+     */
+    public Stage editRecipePage(Stage stage, Recipe recipe) {
+        BorderPane borderPane = new BorderPane();
+        borderPane.setMinSize(800, 600);
+        borderPane.setBackground(new Background(new BackgroundFill(Color.web(backgroundColor), new CornerRadii(1), new Insets(1))));
+        GridPane gridPane = new GridPane();
+
+
+
+        Button SubmitEditRecipeDifficultyButton = new Button();
+        EditRecipeDifficulty editRecipeDifficulty = new EditRecipeDifficulty(recipe.getId(), recipe.getDifficulty());
+
+        Button SubmitEditRecipeIngredientButton = new Button();
+
+
+        Button SubmitEditRecipeCategoriesButton = new Button();
+
+        // creating recipe name
+        Label recipeNameLabel = new Label("Recipe Name:");
+        TextField recipeName = new TextField();
+        Button SubmitEditRecipeNameButton = new Button();
+        EditRecipeName editRecipeName = new EditRecipeName(recipe.getId(), recipeName.getText());
+
+        // creating the description
+        Label descriptionLabel = new Label("Description:");
+        TextArea description = new TextArea();
+        Button SubmitEditRecipeDescriptionButton = new Button();
+        EditRecipeDescription editRecipeDescription = new EditRecipeDescription(recipe.getId(), description.getText());
+
+        // creating the servings
+        Label servingsLabel = new Label("Servings:");
+        TextField servings = new TextField();
+        Button SubmitEditRecipeServingsButton = new Button();
+        EditRecipeServings editRecipeServings = new EditRecipeServings(recipe.getId(), Integer.parseInt(servings.getText()));
+
+        // creating the cook time
+        Label cookTimeLabel = new Label("Cook Time:");
+        TextField cookTime = new TextField();
+        Button SubmitEditRecipeCookTimeButton = new Button();
+        EditRecipeCookTime editRecipeCookTime = new EditRecipeCookTime(recipe.getId(), Integer.parseInt(cookTime.getText()));
+
+        // creating the dropdown menu for the categories
+        Label difficultyLabel = new Label("Difficulty:");
+        String[] difficulty = {"Easy", "Easy-Medium", "Medium", "Medium-Hard", "Hard"};
+        ComboBox difficulties = new ComboBox<String>(FXCollections.observableArrayList(difficulty));
+        difficulties.getItems().addAll();
+
+        EventHandler<ActionEvent> actionEvent = new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                difficulties.getValue();
+            }
+        };
+        difficulties.setOnAction(actionEvent);
+
+        // creating the steps
+        Label stepsLabel = new Label("Steps:");
+        TextArea steps = new TextArea();
+
+        // creating ingredients
+        Label ingredients = new Label("Ingredients (Name, Quantity):");
+        VBox fields = new VBox();
+        for (int i = 0; i < 5; i++) {
+            HBox ingredient = new HBox();
+            TextField name = new TextField();
+            TextField quantity = new TextField();
+            ingredient.getChildren().addAll(name, quantity);
+            fields.getChildren().add(ingredient);
+        }
+        Button add = new Button("+");
+        add.setOnAction(event -> {
+            int size = fields.getChildren().size();
+            HBox ingredient = new HBox();
+            TextField name = new TextField();
+            TextField quantity = new TextField();
+            ingredient.getChildren().addAll(name, quantity);
+            fields.getChildren().add(size - 1, ingredient);
+        });
+        Button minus = new Button("-");
+        minus.setOnAction(event -> {
+            int size = fields.getChildren().size();
+            if (size > 2) {
+                fields.getChildren().remove(size - 2);
+            }
+        });
+        HBox addAndMinus = new HBox();
+        addAndMinus.getChildren().addAll(add, minus);
+        fields.getChildren().add(addAndMinus);
+
+        // add it to categories
+        Label categories = new Label("Categories:");
+        VBox catibois = new VBox();
+        for (int i = 0; i < 1; i++) {
+            TextField category = new TextField();
+            catibois.getChildren().add(category);
+        }
+        Button add_cat = new Button("+");
+        add_cat.setOnAction(event -> {
+            int size = catibois.getChildren().size();
+            TextField category = new TextField();
+            catibois.getChildren().add(size - 1, category);
+        });
+        Button minus_cat = new Button("-");
+        minus_cat.setOnAction(event -> {
+            int size = catibois.getChildren().size();
+            if (size > 1) {
+                catibois.getChildren().remove(size - 2);
+            }
+        });
+        HBox addAndMinus_cat = new HBox();
+        addAndMinus_cat.getChildren().addAll(add_cat, minus_cat);
+        catibois.getChildren().add(addAndMinus_cat);
+
+
+        // submitting the recipe button
+        Button submit = new Button("Submit");
+        submit.setOnAction(event -> {
+            String r_recipeName = recipeName.getText();
+            String r_description = description.getText();
+            int r_servings = Integer.parseInt(servings.getText());
+            int r_cookTime = Integer.parseInt(cookTime.getText());
+            String r_difficulty = (String) difficulties.getValue();
+            String r_steps = steps.getText();
+            ArrayList<Ingredient> r_ingredients = new ArrayList<>();
+            int i = 0;
+            for (Node ingredientThing : fields.getChildren()) {
+                if (i == fields.getChildren().size() - 1) {
+                    break;
+                }
+                String name = ((TextField) ((HBox) ingredientThing).getChildren().get(0)).getText();
+                int quantity = Integer.parseInt(((TextField) ((HBox) ingredientThing).getChildren().get(1)).getText());
+                r_ingredients.add(new Ingredient(name, quantity));
+                i++;
+            }
+            MakeRecipe makeIt = new MakeRecipe(r_recipeName, r_description, r_servings, r_cookTime, r_difficulty, r_steps, r_ingredients, username);
+            makeIt.createRecipe();
+            i = 0;
+            for (Node categoryItem : catibois.getChildren()) {
+                if (i == catibois.getChildren().size() - 1) {
+                    break;
+                }
+                AddRecipeToCategory addition = new AddRecipeToCategory(String.valueOf(makeIt.getID()), ((TextField) categoryItem).getText());
+                addition.addToCategory();
+                i++;
+            }
+            userRecipePage(stage);
+        });
+
+        // adding all of the labels and text field to a grid pane
+//        gridPane.addRow(0, recipeNameLabel);
+//        gridPane.addRow(1,new Text(recipe.getName()));
+//        gridPane.addRow(2, recipeName, );
+//
+//        gridPane.addRow(3, descriptionLabel);
+//        gridPane.addRow(4, new Text(recipe.getDescription()));
+//        gridPane.addRow(5, description, );
+//
+//        gridPane.addRow(6, servingsLabel);
+//        gridPane.addRow(7, new Text(String.valueOf(recipe.getServings())));
+//        gridPane.addRow(8,servings, );
+//
+//        gridPane.addRow(9, cookTimeLabel);
+//        gridPane.addRow(10,new Text(String.valueOf(recipe.getCookTime())));
+//        gridPane.addRow(11, cookTime, );
+//
+//        gridPane.addRow(12, difficultyLabel);
+//        gridPane.addRow(13, new Text(recipe.getDifficulty()));
+//        gridPane.addRow(14, difficulties, );
+//
+//        gridPane.addRow(15, ingredients, fields);
+//        gridPane.addRow(16,);
+//        gridPane.addRow(17, );
+//
+//        gridPane.addRow(18, stepsLabel);
+//        gridPane.addRow(19, new Text(recipe.getSteps()));
+//        gridPane.addRow(20, steps, );
+//
+//        gridPane.addRow(21, categories);
+//        gridPane.addRow(22, new Text(recipe.getCategories().toString()));
+//        gridPane.addRow(23, catibois);
+//
+//        gridPane.addRow(24, submit, backToHomeButton());
+
+        borderPane.setCenter(gridPane);
+        ScrollPane scrollPane = new ScrollPane(borderPane);
+        scrollPane.setMinSize(800, 600);
+        Scene scene = new Scene(scrollPane);
+        stage.setScene(scene);
+        stage.setTitle("New Recipe");
+        changeStageSize(stage);
+        return stage;
+    }
 
     public static void main(String[] args) {
         if (args.length != 0) {
