@@ -1467,16 +1467,6 @@ public class RecipeGUI extends Application {
         borderPane.setBackground(new Background(new BackgroundFill(Color.web(backgroundColor), new CornerRadii(1), new Insets(1))));
         GridPane gridPane = new GridPane();
 
-
-
-        Button SubmitEditRecipeDifficultyButton = new Button();
-        EditRecipeDifficulty editRecipeDifficulty = new EditRecipeDifficulty(recipe.getId(), recipe.getDifficulty());
-
-        Button SubmitEditRecipeIngredientButton = new Button();
-
-
-        Button SubmitEditRecipeCategoriesButton = new Button();
-
         // creating recipe name
         Label recipeNameLabel = new Label("Recipe Name:");
         TextField recipeName = new TextField();
@@ -1515,6 +1505,13 @@ public class RecipeGUI extends Application {
         };
         difficulties.setOnAction(actionEvent);
 
+        // creating the edit difficulty button
+        Button SubmitEditRecipeDifficultyButton = new Button("Edit Difficulty");
+        SubmitEditRecipeDifficultyButton.setOnAction(event -> {
+            EditRecipeDifficulty edit = new EditRecipeDifficulty(recipe.getId(), difficulties.getValue().toString());
+            edit.editDifficulty();
+        });
+
         // creating the steps
         Label stepsLabel = new Label("Steps:");
         TextArea steps = new TextArea();
@@ -1522,10 +1519,12 @@ public class RecipeGUI extends Application {
         // creating ingredients
         Label ingredients = new Label("Ingredients (Name, Quantity):");
         VBox fields = new VBox();
-        for (int i = 0; i < 5; i++) {
+        for (Ingredient i : recipe.getIngredients()) {
             HBox ingredient = new HBox();
             TextField name = new TextField();
+            name.setText(i.getName());
             TextField quantity = new TextField();
+            quantity.setText(String.valueOf(i.getQuantity()));
             ingredient.getChildren().addAll(name, quantity);
             fields.getChildren().add(ingredient);
         }
@@ -1549,11 +1548,32 @@ public class RecipeGUI extends Application {
         addAndMinus.getChildren().addAll(add, minus);
         fields.getChildren().add(addAndMinus);
 
+        // creating the edit ingredient button
+        Button SubmitEditRecipeIngredientButton = new Button("Edit Ingredients");
+        SubmitEditRecipeIngredientButton.setOnAction(event -> {
+            ArrayList<Ingredient> r_ingredients = new ArrayList<>();
+            int i = 0;
+            for (Node ingredientThing : fields.getChildren()) {
+                if (i == fields.getChildren().size() - 1) {
+                    break;
+                }
+                String name = ((TextField) ((HBox) ingredientThing).getChildren().get(0)).getText();
+                int quantity = Integer.parseInt(((TextField) ((HBox) ingredientThing).getChildren().get(1)).getText());
+                r_ingredients.add(new Ingredient(name, quantity));
+                i++;
+            }
+            EditRecipeIngredients edit = new EditRecipeIngredients(recipe.getId(), r_ingredients);
+            edit.editIngredients();
+            editRecipePage(stage, recipe);
+        });
+
+
         // add it to categories
         Label categories = new Label("Categories:");
         VBox catibois = new VBox();
-        for (int i = 0; i < 1; i++) {
+        for (String c : recipe.getCategories()) {
             TextField category = new TextField();
+            category.setText(c);
             catibois.getChildren().add(category);
         }
         Button add_cat = new Button("+");
@@ -1573,75 +1593,57 @@ public class RecipeGUI extends Application {
         addAndMinus_cat.getChildren().addAll(add_cat, minus_cat);
         catibois.getChildren().add(addAndMinus_cat);
 
-
-        // submitting the recipe button
-        Button submit = new Button("Submit");
-        submit.setOnAction(event -> {
-            String r_recipeName = recipeName.getText();
-            String r_description = description.getText();
-            int r_servings = Integer.parseInt(servings.getText());
-            int r_cookTime = Integer.parseInt(cookTime.getText());
-            String r_difficulty = (String) difficulties.getValue();
-            String r_steps = steps.getText();
-            ArrayList<Ingredient> r_ingredients = new ArrayList<>();
+        // creating the edit category button
+        Button SubmitEditRecipeCategoryButton = new Button("Edit Categories");
+        SubmitEditRecipeCategoryButton.setOnAction(event -> {
+            ArrayList<String> r_category = new ArrayList<>();
             int i = 0;
-            for (Node ingredientThing : fields.getChildren()) {
+            for (Node categoryThing : fields.getChildren()) {
                 if (i == fields.getChildren().size() - 1) {
                     break;
                 }
-                String name = ((TextField) ((HBox) ingredientThing).getChildren().get(0)).getText();
-                int quantity = Integer.parseInt(((TextField) ((HBox) ingredientThing).getChildren().get(1)).getText());
-                r_ingredients.add(new Ingredient(name, quantity));
+                r_category.add(((TextField) categoryThing).getText());
                 i++;
             }
-            MakeRecipe makeIt = new MakeRecipe(r_recipeName, r_description, r_servings, r_cookTime, r_difficulty, r_steps, r_ingredients, username);
-            makeIt.createRecipe();
-            i = 0;
-            for (Node categoryItem : catibois.getChildren()) {
-                if (i == catibois.getChildren().size() - 1) {
-                    break;
-                }
-                AddRecipeToCategory addition = new AddRecipeToCategory(String.valueOf(makeIt.getID()), ((TextField) categoryItem).getText());
-                addition.addToCategory();
-                i++;
-            }
-            userRecipePage(stage);
+            EditRecipeCategories edit = new EditRecipeCategories(recipe.getId(), r_category);
+            edit.editCategories();
+            editRecipePage(stage, recipe);
         });
 
         // adding all of the labels and text field to a grid pane
-//        gridPane.addRow(0, recipeNameLabel);
-//        gridPane.addRow(1,new Text(recipe.getName()));
-//        gridPane.addRow(2, recipeName, );
-//
-//        gridPane.addRow(3, descriptionLabel);
-//        gridPane.addRow(4, new Text(recipe.getDescription()));
-//        gridPane.addRow(5, description, );
-//
-//        gridPane.addRow(6, servingsLabel);
-//        gridPane.addRow(7, new Text(String.valueOf(recipe.getServings())));
-//        gridPane.addRow(8,servings, );
-//
-//        gridPane.addRow(9, cookTimeLabel);
-//        gridPane.addRow(10,new Text(String.valueOf(recipe.getCookTime())));
-//        gridPane.addRow(11, cookTime, );
-//
-//        gridPane.addRow(12, difficultyLabel);
-//        gridPane.addRow(13, new Text(recipe.getDifficulty()));
-//        gridPane.addRow(14, difficulties, );
-//
-//        gridPane.addRow(15, ingredients, fields);
-//        gridPane.addRow(16,);
-//        gridPane.addRow(17, );
-//
-//        gridPane.addRow(18, stepsLabel);
-//        gridPane.addRow(19, new Text(recipe.getSteps()));
-//        gridPane.addRow(20, steps, );
-//
-//        gridPane.addRow(21, categories);
-//        gridPane.addRow(22, new Text(recipe.getCategories().toString()));
-//        gridPane.addRow(23, catibois);
-//
-//        gridPane.addRow(24, submit, backToHomeButton());
+        gridPane.addRow(0, recipeNameLabel);
+        gridPane.addRow(1,new Text(recipe.getName()));
+        gridPane.addRow(2, recipeName, SubmitEditRecipeNameButton);
+
+        gridPane.addRow(3, descriptionLabel);
+        gridPane.addRow(4, new Text(recipe.getDescription()));
+        gridPane.addRow(5, description, SubmitEditRecipeDescriptionButton);
+
+        gridPane.addRow(6, servingsLabel);
+        gridPane.addRow(7, new Text(String.valueOf(recipe.getServings())));
+        gridPane.addRow(8,servings, SubmitEditRecipeServingsButton);
+
+        gridPane.addRow(9, cookTimeLabel);
+        gridPane.addRow(10,new Text(String.valueOf(recipe.getCookTime())));
+        gridPane.addRow(11, cookTime, SubmitEditRecipeCookTimeButton);
+
+        gridPane.addRow(12, difficultyLabel);
+        gridPane.addRow(13, new Text(recipe.getDifficulty()));
+        gridPane.addRow(14, difficulties, SubmitEditRecipeDifficultyButton);
+
+        gridPane.addRow(15, ingredients);
+        gridPane.addRow(16,fields);
+        gridPane.addRow(17, SubmitEditRecipeIngredientButton);
+
+        gridPane.addRow(18, stepsLabel);
+        gridPane.addRow(19, new Text(recipe.getSteps()));
+        gridPane.addRow(20, steps, SubmitEditRecipeStepsButton);
+
+        gridPane.addRow(21, categories);
+        gridPane.addRow(22, catibois);
+        gridPane.addRow(23, SubmitEditRecipeCategoryButton);
+
+        gridPane.addRow(24, backToHomeButton());
 
         borderPane.setCenter(gridPane);
         ScrollPane scrollPane = new ScrollPane(borderPane);
