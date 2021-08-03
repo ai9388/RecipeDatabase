@@ -259,7 +259,9 @@ public class RecipeGUI extends Application {
         // creating the register button and settings its action
         Button registerButton = new Button();
         registerButton.setText("Register");
-        registerButton.setOnAction(event -> {
+        registerButton.setTextFill(Color.web(textColor));
+        registerButton.setBackground(new Background(new BackgroundFill(Color.web(accentColor1), new CornerRadii(1), new Insets(1))));
+        registerButton.setOnAction(e -> {
             this.username = username.getText();
             this.password = password.getText();
             Register register = new Register(this.username, this.password);
@@ -277,12 +279,16 @@ public class RecipeGUI extends Application {
         // creating cancel cutton and setting its action
         Button cancelButton = new Button();
         cancelButton.setText("Cancel");
+        cancelButton.setTextFill(Color.web(textColor));
+        cancelButton.setBackground(new Background(new BackgroundFill(Color.web(accentColor1), new CornerRadii(1), new Insets(1))));
         cancelButton.setOnAction(event -> indexPage(stage));
 
         // adding to grid pane
         gridPane.addRow(2, registerButton);
         gridPane.addRow(3, cancelButton);
+        gridPane.setAlignment(Pos.CENTER);
         borderPane.setCenter(gridPane);
+        borderPane.setBackground(new Background(new BackgroundFill(Color.web(backgroundColor), new CornerRadii(1), new Insets(1))));
 
         // setting the stage
         Scene scene = new Scene(borderPane);
