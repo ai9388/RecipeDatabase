@@ -1639,6 +1639,7 @@ public class RecipeGUI extends Application {
                     break;
                 }
                 r_category.add(((TextField) categoryThing).getText());
+
                 i++;
             }
             EditRecipeCategories edit = new EditRecipeCategories(recipe.getId(), r_category);
