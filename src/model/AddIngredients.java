@@ -33,7 +33,7 @@ public class AddIngredients {
                 Statement doesExist = db.createStatement();
                 ResultSet doesExistRS = doesExist.executeQuery("SELECT * FROM owns WHERE item_id=" + itemID + " AND username='" + username + "'");
                 if (doesExistRS.next()) {
-                    stmt.executeUpdate("UPDATE owns SET current_quantity=" + quantity + " WHERE username='" + username + "' AND item_id=" + itemID + "");
+                    stmt.executeUpdate("UPDATE owns SET current_quantity=" + quantity + " WHERE username='" + username + "' AND item_id=" + itemID);
                 } else {
                     String existedIngredient = "INSERT INTO owns(purchase_date, expiration_date, quantity_bought, current_quantity, username, item_id) " +
                                             "VALUES ('" + date + "', '" + expirationDate + "', " + quantity + ", " + quantity + ", '" + username + "', " + itemID + ")";
