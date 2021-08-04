@@ -1394,7 +1394,7 @@ public class RecipeGUI extends Application {
         borderPane.setMinSize(800, 600);
         borderPane.setBackground(new Background(new BackgroundFill(Color.web(backgroundColor), new CornerRadii(1), new Insets(1))));
         FlowPane center = new FlowPane();
-        title = new Label("Top 50 Most Recent Recipes");
+        title = new Label("Top 50 Highest Rated Recipes");
         title.setFont(new Font("Ariel", 14));
         borderPane.setTop(title);
         Button backToHome = backToHomeButton();
