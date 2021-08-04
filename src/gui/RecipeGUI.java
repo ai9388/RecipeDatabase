@@ -1634,8 +1634,8 @@ public class RecipeGUI extends Application {
         SubmitEditRecipeCategoryButton.setOnAction(event -> {
             ArrayList<String> r_category = new ArrayList<>();
             int i = 0;
-            for (Node categoryThing : fields.getChildren()) {
-                if (i == fields.getChildren().size() - 1) {
+            for (Node categoryThing : catibois.getChildren()) {
+                if (i == catibois.getChildren().size() - 1) {
                     break;
                 }
                 r_category.add(((TextField) categoryThing).getText());
